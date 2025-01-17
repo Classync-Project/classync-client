@@ -10,6 +10,8 @@ import Tasks from "./pages/Tasks";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import Nav from "./components/nav/Nav";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -37,6 +39,18 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Router>
         {/* Navbar for navigation */}
         {/* <Navbar /> */}
