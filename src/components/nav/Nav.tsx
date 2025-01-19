@@ -14,6 +14,7 @@ export default function Nav() {
     { href: "/courses", text: "Courses" },
     { href: "/tasks", text: "Tasks" },
     { href: "/resources", text: "Resources" },
+    { href: "/myclass", text: "My Class" }
   ];
 
   const [activeModal, setActiveModal] = useState<string | null>(null);

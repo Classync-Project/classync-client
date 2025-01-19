@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Nav from "./components/nav/Nav";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MyClasses from "./pages/MyClasses";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const App: React.FC = () => {
           <Route path="/courses" element={<Courses />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/myclass" element={<MyClasses />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </Routes>
       </Router>
