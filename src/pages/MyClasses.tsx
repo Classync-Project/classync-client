@@ -4,34 +4,13 @@ import { Button } from "../components/ui/button";
 import { Classroom } from "../types/Classroom"; // Define your Classroom type
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const MyClasses: React.FC = () => {
     const [classrooms, setClassrooms] = useState<Classroom[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const useremail = localStorage.getItem('useremail');
-    // Fetch classrooms for the logged-in user
-    // useEffect(() => {
-
-    //     const fetchClassrooms = async () => {
-    //         setLoading(true);
-    //         try {
-    //             const { data } = await axios.get("http://localhost:8080/api/classrooms/myclassrooms", {
-    //                 params: { useremail },
-    //                 withCredentials: true,
-    //             });
-    //             console.log(data); // Log the response to check its structure
-    //             setClassrooms(data); // Ensure response.data is an array
-    //         } catch (err) {
-    //             console.error(err);
-    //             toast.error("Error fetching classrooms");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-
-    //     fetchClassrooms();
-    // }, []);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!useremail) {
@@ -78,7 +57,9 @@ const MyClasses: React.FC = () => {
                                 <CardDescription>Class Code: {classroom.classroomCode}</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button variant="outline" className="w-full">
+                                <Button variant="outline" className="w-full" onClick={() => {
+                                    navigate(`/classrooms/${classroom.id}`);
+                                }}>
                                     View Class
                                 </Button>
                             </CardContent>
