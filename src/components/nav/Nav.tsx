@@ -5,6 +5,7 @@ import Logout from "../auth/Logout";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export default function Nav() {
   const user = useSelector((state: any) => state.user.user) || null;
@@ -16,6 +17,8 @@ export default function Nav() {
     { href: "/resources", text: "Resources" },
     { href: "/myclass", text: "My Class" }
   ];
+
+  const navigate = useNavigate();
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
@@ -82,7 +85,7 @@ export default function Nav() {
                     "http://localhost:8080/api/classrooms/join",
                     {
                       classCode,
-                      useremail
+                      useremail,
                     },
                     {
                       withCredentials: true,
@@ -92,12 +95,19 @@ export default function Nav() {
                   if (response.status === 200) {
                     const data = response.data;
                     toast.success(`Successfully joined classroom: "${data.className}"`);
-                  } else {
-                    throw new Error("Invalid classroom code.");
                   }
                 } catch (error) {
                   console.error(error);
-                  toast.error("An error occurred while joining the classroom.");
+
+                  // Check if the error is an Axios error and has a response
+                  if (axios.isAxiosError(error) && error.response) {
+                    // Extract the error message from the backend response
+                    const errorMessage = error.response.data.error || "An error occurred while joining the classroom.";
+                    toast.error(errorMessage); // Display the backend error message
+                  } else {
+                    // Handle non-Axios errors
+                    toast.error("An error occurred while joining the classroom.");
+                  }
                 }
                 closeModal();
               }}
@@ -156,7 +166,8 @@ export default function Nav() {
                   if (response.status === 200) {
                     const data = response.data;
                     toast.success(`Classroom "${data.className}" created successfully!`);
-                    console.log(data);
+                    console.log(" classroom : ", data);
+                    navigate(`/classrooms/${data.classroomId}`);
                   } else {
                     throw new Error("Failed to create classroom.");
                   }
@@ -165,6 +176,7 @@ export default function Nav() {
                   toast.error("An error occurred while creating the classroom.");
                 }
                 closeModal();
+
               }}
             >
               <label className="block mb-2">

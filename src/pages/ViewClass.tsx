@@ -5,12 +5,29 @@ import { Participants } from "../types/Participants";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { Assignment } from "../types/Assignment";
+import CreateAssignment from "./CreateAssignment";
+import { Button } from "../components/ui/button";
 
 const ViewClass: React.FC = () => {
     const { classroomId } = useParams<{ classroomId: string }>();
     const [participants, setParticipants] = useState<Participants[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
+    const [showModal, setShowModal] = useState(false);
+    // useEffect(() => {
+    //     const fetchAssignments = async () => {
+    //         try {
+    //             const response = await axios.get(`http://localhost:8080/api/classrooms/assignments/${classroomId}`);
+    //             setAssignments(response.data);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
+
+    //     fetchAssignments();
+    // }, [classroomId]);
 
     // Fetch participants
     useEffect(() => {
@@ -44,7 +61,7 @@ const ViewClass: React.FC = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Classroom ID: {classroomId}</h1>
+            {/* <h1 className="text-2xl font-bold mb-6">Classroom ID: {classroomId}</h1> */}
 
             <Tabs defaultValue="assignments" className="w-full">
                 <TabsList>
@@ -53,6 +70,27 @@ const ViewClass: React.FC = () => {
                 </TabsList>
 
                 <TabsContent value="assignments">
+                    <Button
+                        onClick={() => setShowModal(true)} // Show modal when clicked
+                    >
+                        Add Assignment
+                    </Button>
+
+                    {/* Modal */}
+                    {showModal && (
+                        <div className="modal-backdrop">
+                            <div className="modal">
+                                <button
+                                    className="modal-close"
+                                    onClick={() => setShowModal(false)} // Close modal
+                                >
+                                    ×
+                                </button>
+                                <h2>Add New Assignment</h2>
+                                <CreateAssignment />
+                            </div>
+                        </div>
+                    )}
                     <Card>
                         <CardHeader>
                             <CardTitle>Assignments</CardTitle>
@@ -61,6 +99,19 @@ const ViewClass: React.FC = () => {
                         <CardContent>
                             {/* Add assignment-related content here */}
                             <p>No assignments available.</p>
+                            <h2>Assignments</h2>
+                            {assignments.map((assignment) => (
+                                <div key={assignment.assignmentId}>
+                                    <h3>{assignment.title}</h3>
+                                    <p>{assignment.content}</p>
+                                    {assignment.filePath && (
+                                        <a href={`http://localhost:8080/${assignment.filePath}`} target="_blank" rel="noopener noreferrer">
+                                            Download PDF
+                                        </a>
+                                    )}
+                                    <p>due date : {assignment.duedate.getTime()}</p>
+                                </div>
+                            ))}
                         </CardContent>
                     </Card>
                 </TabsContent>
