@@ -1,7 +1,7 @@
 export interface Assignment {
-  assignmentId: string;
+  id: string;
   title: string;
   content: string;
   filePath: string;
-  duedate: Date;
+  dueDate: string;
 }

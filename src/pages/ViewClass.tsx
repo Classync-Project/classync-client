@@ -16,18 +16,20 @@ const ViewClass: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [showModal, setShowModal] = useState(false);
-    // useEffect(() => {
-    //     const fetchAssignments = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:8080/api/classrooms/assignments/${classroomId}`);
-    //             setAssignments(response.data);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
 
-    //     fetchAssignments();
-    // }, [classroomId]);
+    useEffect(() => {
+        const fetchAssignments = async () => {
+            try {
+                const { data } = await axios.get(`http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`, { withCredentials: true });
+                console.log("assignments ", data);
+                setAssignments(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchAssignments();
+    }, [classroomId]);
 
     // Fetch participants
     useEffect(() => {
@@ -97,21 +99,27 @@ const ViewClass: React.FC = () => {
                             <CardDescription>View and manage assignments for this classroom.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {/* Add assignment-related content here */}
-                            <p>No assignments available.</p>
-                            <h2>Assignments</h2>
-                            {assignments.map((assignment) => (
-                                <div key={assignment.assignmentId}>
-                                    <h3>{assignment.title}</h3>
-                                    <p>{assignment.content}</p>
-                                    {assignment.filePath && (
-                                        <a href={`http://localhost:8080/${assignment.filePath}`} target="_blank" rel="noopener noreferrer">
-                                            Download PDF
-                                        </a>
-                                    )}
-                                    <p>due date : {assignment.duedate.getTime()}</p>
+                            {assignments.length === 0 ? (
+                                <p>No Assignments Currently ...</p>
+                            ) : (
+
+                                <div className="space-y-4">
+
+                                    {assignments.map((assignment) => (
+                                        <div key={assignment.id} className="border p-4 rounded-lg">
+                                            <h3 className="font-semibold">{assignment.title}</h3>
+                                            <p className="text-sm text-gray-600">{assignment.content}</p>
+                                            {assignment.filePath && (
+                                                <a href={`${assignment.filePath}`} target="_blank" rel="noopener noreferrer">
+                                                    Download PDF
+                                                </a>
+                                            )}
+                                            <p>due date : {assignment.dueDate}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+
+                            )}
                         </CardContent>
                     </Card>
                 </TabsContent>
