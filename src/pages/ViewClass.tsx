@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../co
 import { Participants } from "../types/Participants";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Assignment } from "../types/Assignment";
 import CreateAssignment from "./CreateAssignment";
 import { Button } from "../components/ui/button";
@@ -16,6 +16,7 @@ const ViewClass: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAssignments = async () => {
@@ -73,7 +74,9 @@ const ViewClass: React.FC = () => {
 
                 <TabsContent value="assignments">
                     <Button
-                        onClick={() => setShowModal(true)} // Show modal when clicked
+                        variant="outline"
+                        className="mb-4 "
+                        onClick={() => setShowModal(true)}
                     >
                         Add Assignment
                     </Button>
@@ -83,12 +86,11 @@ const ViewClass: React.FC = () => {
                         <div className="modal-backdrop">
                             <div className="modal">
                                 <button
-                                    className="modal-close"
+                                    className="modal-close "
                                     onClick={() => setShowModal(false)} // Close modal
                                 >
                                     ×
                                 </button>
-                                <h2>Add New Assignment</h2>
                                 <CreateAssignment />
                             </div>
                         </div>
@@ -106,7 +108,7 @@ const ViewClass: React.FC = () => {
                                 <div className="space-y-4">
 
                                     {assignments.map((assignment) => (
-                                        <div key={assignment.id} className="border p-4 rounded-lg">
+                                        <div key={assignment.id} className="border p-4 rounded-lg" onClick={() => navigate(`/classrooms/${classroomId}/assignments/${assignment.id}`)}>
                                             <h3 className="font-semibold">{assignment.title}</h3>
                                             <p className="text-sm text-gray-600">{assignment.content}</p>
                                             {assignment.filePath && (

@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyClasses from "./pages/MyClasses";
 import ViewClass from "./pages/ViewClass";
+import ViewAssignment from "./pages/ViewAssignment ";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const App: React.FC = () => {
           <Route path="/resources" element={<Resources />} />
           <Route path="/myclass" element={<MyClasses />} />
           <Route path="/classrooms/:classroomId" element={<ViewClass />} />
+          <Route path="/classrooms/:classroomId/assignments/:assignmentId" element={<ViewAssignment />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </Routes>
       </Router>
