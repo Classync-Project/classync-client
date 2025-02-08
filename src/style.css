@@ -1,0 +1,61 @@
+/* Blur the background when the modal is open */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    backdrop-filter: blur(5px); /* Blur effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+}
+
+/* Style the modal */
+.modal {
+    background-color: rgb(11, 11, 19); /* Navy blue background */
+    padding: 30px; /* Increased padding for more space inside the modal */
+    border-radius: 8px;
+    width: 600px; /* Increased width */
+    max-width: 90%;
+    color: white; /* White text for contrast */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the close button */
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white; /* White color for the close button */
+}
+
+/* Style input fields */
+.modal input,
+.modal textarea {
+    width: 100%;
+    padding: 15px; /* Increased padding for larger input fields */
+    margin-bottom: 15px; /* Increased margin for more spacing */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+    color: white; /* White text */
+}
+
+.modal input::placeholder,
+.modal textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Light gray placeholder text */
+}
+
+/* Style the heading */
+.modal h2 {
+    margin-bottom: 25px; /* Increased margin for more spacing */
+    color: white; /* White heading */
+    font-size: 24px; /* Larger font size for the heading */
+}
