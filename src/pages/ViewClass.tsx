@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../components/ui/card";
 import { Participants } from "../types/Participants";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,63 +27,118 @@ const ViewClass: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [announcements, setAnnouncements] = useState<any[]>([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchAssignments = async () => {
-            try {
-                const { data } = await axios.get(`http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`, { withCredentials: true });
-                console.log("assignments ", data);
-                setAssignments(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
 
-        fetchAssignments();
-    }, [classroomId]);
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
+          { withCredentials: true }
+        );
+        console.log("assignments ", data);
+        setAssignments(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    // Fetch participants
-    useEffect(() => {
-        const fetchParticipants = async () => {
-            try {
-                const { data } = await axios.get(`http://localhost:8080/api/classrooms/${classroomId}/participants`, {
-                    withCredentials: true,
-                })
-                setParticipants(data);
-                console.log(" participants : ", data);
-                if (data == null) {
-                    toast.error("No participants found");
-                }
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "An error occurred");
-            } finally {
-                setLoading(false);
-            }
-        };
+    fetchAssignments();
+  }, [classroomId]);
 
-        fetchParticipants();
-    }, [classroomId]);
+  // Fetch Announcements
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/announcements/${classroomId}`,
+          { withCredentials: true }
+        );
+        setAnnouncements(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    if (loading) {
-        return <div>Loading...</div>;
+    fetchAnnouncements();
+  }, [classroomId]);
+
+  // Function to handle adding a new announcement
+  const handleAddAnnouncement = async (title: string, content: string) => {
+    try {
+      const userEmail = localStorage.getItem("useremail");
+      await axios.post(
+        `http://localhost:8080/api/announcements/create`,
+        {
+          title,
+          content,
+          classId: classroomId,
+          userEmail,
+        },
+        { withCredentials: true }
+      );
+
+      toast.success("Announcement added successfully!");
+      setShowAnnouncementModal(false);
+
+      // Fetch updated announcements
+      const { data } = await axios.get(
+        `http://localhost:8080/api/announcements/${classroomId}`,
+        { withCredentials: true }
+      );
+      setAnnouncements(data);
+    } catch (error) {
+      toast.error("Failed to add announcement.");
+      console.error(error);
     }
+  };
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+  //     // Fetch participants
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/classrooms/${classroomId}/participants`,
+          {
+            withCredentials: true,
+          }
+        );
+        setParticipants(data);
+        console.log(" participants : ", data);
+        if (data == null) {
+          toast.error("No participants found");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <div className="container mx-auto p-4">
-            {/* <h1 className="text-2xl font-bold mb-6">Classroom ID: {classroomId}</h1> */}
+    fetchParticipants();
+  }, [classroomId]);
 
-            <Tabs defaultValue="assignments" className="w-full">
-                <TabsList>
-                    <TabsTrigger value="assignments">Assignments</TabsTrigger>
-                    <TabsTrigger value="participants">Participants</TabsTrigger>
-                </TabsList>
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-                <TabsContent value="assignments">
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <Tabs defaultValue="assignments" className="w-full">
+        <TabsList>
+          <TabsTrigger value="assignments">Assignments</TabsTrigger>
+          <TabsTrigger value="participants">Participants</TabsTrigger>
+          <TabsTrigger value="announcements">Annoucements</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="assignments">
                     <Button
                         variant="outline"
                         className="mb-4 "
@@ -149,9 +215,88 @@ const ViewClass: React.FC = () => {
                         </CardContent>
                     </Card>
                 </TabsContent>
-            </Tabs>
-        </div>
-    );
+
+        <TabsContent value="announcements">
+          <Button onClick={() => setShowAnnouncementModal(true)}>
+            Add Announcement
+          </Button>
+
+          {showAnnouncementModal && (
+            <div className="modal-backdrop">
+              <div className="modal">
+                <button
+                  className="modal-close"
+                  onClick={() => setShowAnnouncementModal(false)}
+                >
+                  ×
+                </button>
+                <h2>Add New Announcement</h2>
+                <input
+                  type="text"
+                  placeholder="Title"
+                  className="border p-2 w-full mb-2"
+                  id="announcementTitle"
+                />
+                <textarea
+                  placeholder="Content"
+                  className="border p-2 w-full mb-2"
+                  id="announcementContent"
+                ></textarea>
+                <Button
+                  onClick={() => {
+                    const title = (
+                      document.getElementById(
+                        "announcementTitle"
+                      ) as HTMLInputElement
+                    ).value;
+                    const content = (
+                      document.getElementById(
+                        "announcementContent"
+                      ) as HTMLTextAreaElement
+                    ).value;
+                    handleAddAnnouncement(title, content);
+                  }}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Announcements</CardTitle>
+              <CardDescription>
+                View all announcements in this classroom.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {announcements.length === 0 ? (
+                <p>No Announcements Available...</p>
+              ) : (
+                <div className="space-y-4">
+                  {announcements.map((announcement) => (
+                    <div
+                      key={announcement.id}
+                      className="border p-4 rounded-lg"
+                    >
+                      <h3 className="font-semibold">{announcement.title}</h3>
+                      <p className="text-sm text-gray-600">
+                        {announcement.content}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        By: {announcement.author.email}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
 
 export default ViewClass;
