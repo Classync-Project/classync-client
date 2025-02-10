@@ -3,8 +3,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 
-const CreateAssignment: React.FC = () => {
+const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const { user } = useSelector((state: any) => state.user) || {};
   const navigate = useNavigate();
@@ -23,20 +24,15 @@ const CreateAssignment: React.FC = () => {
   const [dragging, setDragging] = useState(false);
 
   const updateForm = (field: string, value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!file) {
       toast.error("Please upload a PDF file.");
       return;
     }
-
     const submissionData = new FormData();
     submissionData.append("title", formData.title);
     submissionData.append("content", formData.content);
@@ -44,138 +40,85 @@ const CreateAssignment: React.FC = () => {
     submissionData.append("createdById", formData.createdById);
     submissionData.append("dueDate", formData.dueDate);
     submissionData.append("file", file);
-
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/classrooms/assignments/add`,
+        "http://localhost:8080/api/classrooms/assignments/add",
         submissionData,
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
       if (response.status === 200) {
-        console.log("Assignment created successfully:", response.data);
         toast.success("Assignment created successfully!");
-        console.log("Navigating to classroom:", classroomId);
         navigate(`/classrooms/${classroomId}`);
+        onClose();
       } else {
-        console.error("Unexpected response status:", response.status);
         toast.error("Failed to create assignment.");
       }
-    } catch (error) {
-      console.error("Error creating assignment:", error);
-      toast.error("Failed to create assignment.");
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(true);
-  };
-
-  const handleDragLeave = () => setDragging(false);
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile && droppedFile.type === "application/pdf") {
-      setFile(droppedFile);
-    } else {
-      toast.error("Only PDF files are allowed.");
+    } catch (err) {
+      toast.error("Error creating assignment.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-r from-gray-900 to-gray-800">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-lg bg-navy-900 p-8 rounded-3xl shadow-2xl space-y-6 transform transition-all duration-300 hover:shadow-3xl"
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="w-full max-w-lg bg-gray-900 p-8 rounded-3xl shadow-xl space-y-6 relative text-white"
       >
-        <h2 className="text-3xl font-bold text-center text-white mb-6">
-          Create Assignment
-        </h2>
-
-        <div>
-          <label className="block text-gray-300 font-medium mb-2">Title</label>
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">×</button>
+        <h2 className="text-3xl font-bold text-center">Create Assignment</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             value={formData.title}
             onChange={(e) => updateForm("title", e.target.value)}
-            className="w-full mt-1 p-3 border-2 border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 bg-gray-800 text-white placeholder-gray-400"
-            placeholder="Enter assignment title"
+            className="w-full p-3 border-none rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+            placeholder="Assignment Title"
             required
           />
-        </div>
-
-        <div>
-          <label className="block text-gray-300 font-medium mb-2">
-            Content
-          </label>
           <textarea
             value={formData.content}
             onChange={(e) => updateForm("content", e.target.value)}
-            className="w-full mt-1 p-3 border-2 border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 bg-gray-800 text-white placeholder-gray-400"
+            className="w-full p-3 border-none rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
             rows={4}
-            placeholder="Enter assignment content"
+            placeholder="Assignment Details"
           />
-        </div>
-
-        <div
-          className={`w-full mt-1 p-6 border-2 border-dashed rounded-lg text-center cursor-pointer transition-all duration-300 ${
-            dragging
-              ? "border-blue-500 bg-blue-900"
-              : "border-gray-700 bg-gray-800"
-          }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="hidden"
-            id="fileUpload"
-          />
-          <label htmlFor="fileUpload" className="cursor-pointer text-gray-300">
-            {file ? (
-              <span className="text-blue-400 font-medium">{file.name}</span>
-            ) : (
-              <>
-                <span className="text-gray-400">Drag & Drop a PDF here or</span>{" "}
-                <span className="text-blue-400 font-medium">
-                  Click to Upload
-                </span>
-              </>
-            )}
-          </label>
-        </div>
-
-        <div>
-          <label className="block text-gray-300 font-medium mb-2">
-            Due Date
-          </label>
           <input
             type="datetime-local"
             value={formData.dueDate}
             onChange={(e) => updateForm("dueDate", e.target.value)}
-            className="w-full mt-1 p-3 border-2 border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-300 bg-gray-800 text-white"
+            className="w-full p-3 border-none rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             required
           />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-        >
-          Create Assignment
-        </button>
-      </form>
+          <div
+            className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-blue-500 bg-blue-900" : "border-gray-700 bg-gray-800"}`}
+            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              const droppedFile = e.dataTransfer.files?.[0];
+              if (droppedFile && droppedFile.type === "application/pdf") {
+                setFile(droppedFile);
+              } else {
+                toast.error("Only PDF files are allowed.");
+              }
+            }}
+          >
+            <input type="file" accept="application/pdf" className="hidden" id="fileUpload" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+            <label htmlFor="fileUpload" className="cursor-pointer text-gray-300">
+              {file ? <span className="text-blue-400 font-medium">{file.name}</span> : "Drag & Drop a PDF or Click to Upload"}
+            </label>
+          </div>
+          <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-all">
+            Submit Assignment
+          </button>
+        </form>
+      </motion.div>
     </div>
   );
 };

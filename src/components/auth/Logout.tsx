@@ -25,6 +25,7 @@ export default function Logout() {
 
       dispatch({ type: "CLEAR_USER" });
       console.log("Logged out");
+      localStorage.removeItem("useremail");
     } catch (error) {
       console.error(error);
     }
