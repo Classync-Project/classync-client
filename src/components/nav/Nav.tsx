@@ -118,6 +118,7 @@ export default function Nav() {
                     toast.success(
                       `Successfully joined classroom: "${data.className}"`
                     );
+                    navigate(`/classrooms/${data.id}`);
                   }
                 } catch (error) {
                   console.error(error);

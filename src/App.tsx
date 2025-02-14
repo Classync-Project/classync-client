@@ -24,7 +24,7 @@ const App: React.FC = () => {
         withCredentials: true,
       });
       if (data) {
-        console.log(data);
+        // console.log(data);
         localStorage.setItem('useremail', data.email);
 
         dispatch({ type: "SET_USER", payload: data });
@@ -40,7 +40,7 @@ const App: React.FC = () => {
 
   const { user } = useSelector((state: any) => state.user) || {};
   // localStorage.setItem('useremail', user.email);
-  console.log(user);
+  // console.log(user);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
