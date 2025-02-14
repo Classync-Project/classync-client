@@ -89,7 +89,7 @@ const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ participants, classRo
               <div
                 key={user.id}
                 className="p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 cursor-pointer"
-                onClick={() => handleUserClick(user)} // Open modal on click
+                onClick={() => handleUserClick(user)} 
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
