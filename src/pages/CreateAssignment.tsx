@@ -69,7 +69,12 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         exit={{ opacity: 0, scale: 0.9 }}
         className="w-full max-w-lg bg-gray-900 p-8 rounded-3xl shadow-xl space-y-6 relative text-white"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">×</button>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"
+        >
+          ×
+        </button>
         <h2 className="text-3xl font-bold text-center">Create Assignment</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -95,8 +100,15 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             required
           />
           <div
-            className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-blue-500 bg-blue-900" : "border-gray-700 bg-gray-800"}`}
-            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${
+              dragging
+                ? "border-blue-500 bg-blue-900"
+                : "border-gray-700 bg-gray-800"
+            }`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
             onDragLeave={() => setDragging(false)}
             onDrop={(e) => {
               e.preventDefault();
@@ -109,12 +121,28 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               }
             }}
           >
-            <input type="file" accept="application/pdf" className="hidden" id="fileUpload" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-            <label htmlFor="fileUpload" className="cursor-pointer text-gray-300">
-              {file ? <span className="text-blue-400 font-medium">{file.name}</span> : "Drag & Drop a PDF or Click to Upload"}
+            <input
+              type="file"
+              accept="application/pdf"
+              className="hidden"
+              id="fileUpload"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+            />
+            <label
+              htmlFor="fileUpload"
+              className="cursor-pointer text-gray-300"
+            >
+              {file ? (
+                <span className="text-blue-400 font-medium">{file.name}</span>
+              ) : (
+                "Drag & Drop a PDF or Click to Upload"
+              )}
             </label>
           </div>
-          <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-all">
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-all"
+          >
             Submit Assignment
           </button>
         </form>
