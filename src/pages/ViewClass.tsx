@@ -1,3 +1,203 @@
+// import React, { useEffect, useState } from "react";
+// import {
+//   Tabs,
+//   TabsContent,
+//   TabsList,
+//   TabsTrigger,
+// } from "../components/ui/tabs";
+// import {
+//   Calendar,
+//   Users,
+//   Bell,
+// } from "lucide-react";
+// import axios from "axios";
+// import { useLocation, useParams } from "react-router-dom";
+// import { useSelector } from "react-redux";
+// import { Participants } from "../types/Participants";
+// import { Assignment } from "../types/Assignment";
+// import ParticipantsTab from "../components/ParticipantsTab";
+// import AssignmentsTab from "../components/AssignmentsTab";
+// import AnnouncementsTab from "../components/AnnouncementsTab";
+
+// const ViewClass = () => {
+//   const { classroomId } = useParams<{ classroomId: string }>();
+//   const [participants, setParticipants] = useState<Participants[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [assignments, setAssignments] = useState<Assignment[]>([]);
+//   const [announcements, setAnnouncements] = useState<any[]>([]);
+
+//   const location = useLocation();
+//   const role = location.state?.role;
+//   const { user } = useSelector((state: any) => state.user) || {};
+
+//   // Fetch participants
+//   useEffect(() => {
+//     const fetchParticipants = async () => {
+//       try {
+//         const { data } = await axios.get(
+//           `http://localhost:8080/api/classrooms/${classroomId}/participants`,
+//           { withCredentials: true }
+//         );
+//         setParticipants(data);
+//       } catch (err) {
+//         setError(err instanceof Error ? err.message : "An error occurred");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchParticipants();
+//   }, [classroomId]);
+
+//   // Fetch assignments
+//   useEffect(() => {
+//     const fetchAssignments = async () => {
+//       try {
+//         const { data } = await axios.get(
+//           `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
+//           { withCredentials: true }
+//         );
+//         setAssignments(data);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+
+//     fetchAssignments();
+//   }, [classroomId]);
+
+//   // Fetch announcements
+//   useEffect(() => {
+//     const fetchAnnouncements = async () => {
+//       try {
+//         const { data } = await axios.get(
+//           `http://localhost:8080/api/announcements/${classroomId}`,
+//           { withCredentials: true }
+//         );
+//         setAnnouncements(data);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+
+//     fetchAnnouncements();
+//   }, [classroomId]);
+
+//   const handleRoleUpdate = (userId: number, newRole: string) => {
+//     setParticipants((prevParticipants) =>
+//       prevParticipants.map((user) =>
+//         user.id === userId ? { ...user, role: newRole } : user
+//       )
+//     );
+//   };
+
+//   // Update assignments after new creation
+//   const updateAssignments = async () => {
+//     try {
+//       const { data } = await axios.get(
+//         `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
+//         { withCredentials: true }
+//       );
+//       setAssignments(data);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   // Update announcements after new creation
+//   const updateAnnouncements = async () => {
+//     try {
+//       const { data } = await axios.get(
+//         `http://localhost:8080/api/announcements/${classroomId}`,
+//         { withCredentials: true }
+//       );
+//       setAnnouncements(data);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="p-6 bg-red-50 rounded-lg text-red-600">
+//           Error: {error}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
+//         <TabsList className="bg-white p-1 rounded-xl shadow-sm mb-6">
+//           <TabsTrigger
+//             value="assignments"
+//             className="flex items-center space-x-2"
+//           >
+//             <Calendar className="w-4 h-4" />
+//             <span>Assignments</span>
+//           </TabsTrigger>
+//           <TabsTrigger
+//             value="participants"
+//             className="flex items-center space-x-2"
+//           >
+//             <Users className="w-4 h-4" />
+//             <span>Participants</span>
+//           </TabsTrigger>
+//           <TabsTrigger
+//             value="announcements"
+//             className="flex items-center space-x-2"
+//           >
+//             <Bell className="w-4 h-4" />
+//             <span>Announcements</span>
+//           </TabsTrigger>
+//         </TabsList>
+
+//         <TabsContent value="assignments">
+//           <AssignmentsTab
+//             assignments={assignments}
+//             classroomId={classroomId}
+//             role={role}
+//             onAssignmentCreated={updateAssignments}
+//           />
+//         </TabsContent>
+
+//         <TabsContent value="participants">
+//           <ParticipantsTab
+//             participants={participants}
+//             classRoomId={classroomId || ""}
+//             onRoleUpdate={handleRoleUpdate}
+//             Role={role || ""}
+//           />
+//         </TabsContent>
+
+//         <TabsContent value="announcements">
+//           <AnnouncementsTab
+//             announcements={announcements}
+//             assignments={assignments}
+//             classroomId={classroomId}
+//             role={role}
+//             user={user}
+//             onAnnouncementCreated={updateAnnouncements}
+//           />
+//         </TabsContent>
+//       </Tabs>
+//     </div>
+//   );
+// };
+
+// export default ViewClass;
+
 import React, { useEffect, useState } from "react";
 import {
   Tabs,
@@ -5,46 +205,67 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "../components/ui/card";
-import { Participants } from "../types/Participants";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Assignment } from "../types/Assignment";
-import CreateAssignment from "./CreateAssignment";
-import { Button } from "../components/ui/button";
-import CommentsService from "../components/CommentsService";
+import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Calendar, Users, Bell, Plus, X, Clock, Download, MessageCircle } from "lucide-react";
+import { Participants } from "../types/Participants";
+import { Assignment } from "../types/Assignment";
 import ParticipantsTab from "../components/ParticipantsTab";
+import AssignmentsTab from "../components/AssignmentsTab";
+import AnnouncementsTab from "../components/AnnouncementsTab";
+import { motion } from "framer-motion";
+import { Toaster } from "../components/ui/sonner";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Calendar, Users, Bell, BookOpen } from "lucide-react";
 
-
-const ViewClass: React.FC = () => {
+const ViewClass = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const [participants, setParticipants] = useState<Participants[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
-  const [commentInputs, setCommentInputs] = useState<{ [key: string]: string }>(
-    {}
-  ); // State to manage comment inputs for each announcement
-  const [comments, setComments] = useState({});
-  const { user } = useSelector((state: any) => state.user) || {};
+  const [classInfo, setClassInfo] = useState<any>(null);
 
-  const userEmail = localStorage.getItem("useremail");
-  const navigate = useNavigate();
   const location = useLocation();
   const role = location.state?.role;
-  // console.log("Role : ", role);
+  const { user } = useSelector((state: any) => state.user) || {};
+
+  // Fetch class info
+  useEffect(() => {
+    const fetchClassInfo = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/classrooms/${classroomId}`,
+          { withCredentials: true }
+        );
+        setClassInfo(data);
+      } catch (err) {
+        console.error("Error fetching class info:", err);
+      }
+    };
+
+    fetchClassInfo();
+  }, [classroomId]);
+
+  // Fetch participants
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/classrooms/${classroomId}/participants`,
+          { withCredentials: true }
+        );
+        setParticipants(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParticipants();
+  }, [classroomId]);
 
   // Fetch assignments
   useEffect(() => {
@@ -80,93 +301,6 @@ const ViewClass: React.FC = () => {
     fetchAnnouncements();
   }, [classroomId]);
 
-  // Handle adding a new announcement
-  const handleAddAnnouncement = async (title: string, content: string) => {
-    try {
-      await axios.post(
-        `http://localhost:8080/api/announcements/create`,
-        {
-          title,
-          content,
-          classId: classroomId,
-          userEmail,
-        },
-        { withCredentials: true }
-      );
-
-      toast.success("Announcement added successfully!");
-      setShowAnnouncementModal(false);
-
-      // Fetch updated announcements
-      const { data } = await axios.get(
-        `http://localhost:8080/api/announcements/${classroomId}`,
-        { withCredentials: true }
-      );
-      setAnnouncements(data);
-    } catch (error) {
-      toast.error("Failed to add announcement.");
-      console.error(error);
-    }
-  };
-
-  const handleAddComment = async (announceId, commentTxt) => {
-    console.log("Hello in adding comment!");
-
-    if (!user.id || !announceId || commentTxt == "") {
-      console.log("Please validate your annoucement!!");
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/comments/add",
-        {
-          userId: user.id,
-          announcementId: announceId,
-          content: commentTxt,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      console.log("Comment added successfully:", response.data);
-    } catch (error) {
-      console.error("Error adding comment:");
-    }
-  };
-
-  const fetchComments = async (announcementId) => {
-    const result = await CommentsService.getCommentsByAnnouncement(
-      announcementId
-    );
-    setComments((prev) => ({
-      ...prev,
-      [announcementId]: result,
-    }));
-  };
-
-  // Fetch participants
-  // Fetch participants
-  useEffect(() => {
-    const fetchParticipants = async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:8080/api/classrooms/${classroomId}/participants`,
-          { withCredentials: true }
-        );
-        setParticipants(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchParticipants();
-  }, [classroomId]);
-
-
   const handleRoleUpdate = (userId: number, newRole: string) => {
     setParticipants((prevParticipants) =>
       prevParticipants.map((user) =>
@@ -175,311 +309,179 @@ const ViewClass: React.FC = () => {
     );
   };
 
+  // Update assignments after new creation
+  const updateAssignments = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
+        { withCredentials: true }
+      );
+      setAssignments(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Update announcements after new creation
+  const updateAnnouncements = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:8080/api/announcements/${classroomId}`,
+        { withCredentials: true }
+      );
+      setAnnouncements(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-blue-600 font-medium">Loading classroom...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="p-6 bg-red-50 rounded-lg text-red-600">
-          Error: {error}
+      <div className="flex items-center justify-center min-h-screen bg-red-50">
+        <div className="p-8 bg-white rounded-lg shadow-lg text-center">
+          <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 text-red-600">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 className="mb-2 text-xl font-semibold text-red-800">Error Loading Classroom</h3>
+          <p className="mb-4 text-gray-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
-        <TabsList className="bg-white p-1 rounded-xl shadow-sm mb-6">
-          <TabsTrigger
-            value="assignments"
-            className="flex items-center space-x-2"
-          >
-            <Calendar className="w-4 h-4" />
-            <span>Assignments</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="participants"
-            className="flex items-center space-x-2"
-          >
-            <Users className="w-4 h-4" />
-            <span>Participants</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="announcements"
-            className="flex items-center space-x-2"
-          >
-            <Bell className="w-4 h-4" />
-            <span>Announcements</span>
-          </TabsTrigger>
-        </TabsList>
-
-
-        <TabsContent value="assignments">
-          <div className="flex justify-end mb-6">
-            {
-              role === "STUDENT"
-                ?
-                <>
-                </>
-                :
-                <Button
-                  onClick={() => setShowModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>New Assignment</span>
-                </Button>
-            }
-          </div>
-
-          <div className="">
-            {assignments.length === 0 ? (
-              <div className="col-span-full flex items-center justify-center p-12 bg-white rounded-xl shadow-sm">
-                <p className="text-gray-500">No assignments available</p>
-              </div>
-            ) : (
-              assignments.map((assignment) => (
-                <Card
-                  key={assignment.id}
-                  className="w-full m-2 hover:shadow-lg transition-shadow duration-200 cursor-pointer bg-white"
-                  onClick={() =>
-                    navigate(
-                      `/classrooms/${classroomId}/assignments/${assignment.id}`
-                    )
-                  }
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-gray-800">
-                      {assignment.title}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-2">
-                      {assignment.content}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))
-            )}
-          </div>
-        </TabsContent>
-
-        <ParticipantsTab
-          participants={participants || ""}
-          classRoomId={classroomId || ""}
-          onRoleUpdate={handleRoleUpdate}
-          Role={role || ""}
-        />
-
-        <TabsContent value="announcements">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Class Announcements
-            </h2>
-            {
-              role === "STUDENT"
-                ?
-                <>
-                </>
-                :
-                <Button
-                  onClick={() => setShowAnnouncementModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>New Announcement</span>
-                </Button>
-            }
-          </div>
-
-          <div className="grid gap-6 grid-cols-4">
-            <div className="col-span-1">
-              <Card className="bg-white shadow-sm sticky top-6">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    Upcoming Due
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {
-                    assignments.length == 0
-                      ?
-                      <>
-                        <h2>Whooooo !! Currently No Assignment</h2>
-                      </>
-                      :
-                      assignments
-                        .filter(
-                          (assignment) => new Date(assignment.dueDate) > new Date()
-                        )
-                        .sort(
-                          (a, b) =>
-                            new Date(a.dueDate).getTime() -
-                            new Date(b.dueDate).getTime()
-                        )
-                        .slice(0, 3)
-                        .map((assignment) => (
-                          <div
-                            key={assignment.id}
-                            className="p-3 rounded-lg bg-gray-50 mb-3 last:mb-0 border border-gray-100"
-                          >
-                            <h4 className="font-medium text-gray-800 mb-1">
-                              {assignment.title}
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              Due:{" "}
-                              {new Date(assignment.dueDate).toLocaleDateString()}
-                            </p>
-                          </div>
-                        ))}
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="col-span-3 space-y-6">
-              {announcements.map((announcement) => (
-                <Card key={announcement.id} className="bg-white shadow-sm">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl font-semibold text-gray-800">
-                          {announcement.title}
-                        </CardTitle>
-                        <CardDescription>
-                          Posted by {announcement.author.email} on{" "}
-                          {new Date(
-                            announcement.createdAt
-                          ).toLocaleDateString()}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-gray-700">{announcement.content}</p>
-                    <div className="border-t pt-4">
-                      <div className="flex items-center space-x-2">
-                        <MessageCircle className="w-4 h-4 text-gray-400" />
-                        <textarea
-                          placeholder="Add a comment..."
-                          className="flex-1 p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
-                          rows={1}
-                          value={commentInputs[announcement.id] || ""}
-                          onChange={(e) =>
-                            setCommentInputs((prev) => ({
-                              ...prev,
-                              [announcement.id]: e.target.value,
-                            }))
-                          }
-                        />
-                        <Button
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={() =>
-                            handleAddComment(
-                              announcement.id,
-                              commentInputs[announcement.id]
-                            )
-                          }
-                        >
-                          Comment
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </TabsContent>
-
-      </Tabs>
-      {/* Modals */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Create Assignment</h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <CreateAssignment onClose={() => setShowModal(false)} />
-          </div>
-        </div>
-      )}
-      {showAnnouncementModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">New Announcement</h2>
-              <button
-                onClick={() => setShowAnnouncementModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
+    <ScrollArea className="h-screen">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto p-6"
+      >
+        {classInfo && (
+          <div className="mb-8">
+            <motion.div
+              initial={{ y: -20 }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-between"
+            >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="announcementTitle"
-                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none"
-                  placeholder="Enter announcement title"
-                />
+                <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                  {classInfo.className || "Class Name"}
+                </h1>
+                <p className="text-gray-600">
+                  {classInfo.description || "Class Description"}
+                </p>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Content
-                </label>
-                <textarea
-                  id="announcementContent"
-                  rows={4}
-                  className="w-full p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
-                  placeholder="Enter announcement content"
-                />
+              <div className="flex items-center space-x-2">
+                <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                  {role || "Role"}
+                </div>
+                <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                  {classInfo.subject || "Subject"}
+                </div>
               </div>
-              <div className="flex justify-end">
-                <Button
-                  onClick={() => {
-                    const title = (
-                      document.getElementById(
-                        "announcementTitle"
-                      ) as HTMLInputElement
-                    ).value.trim();
-                    const content = (
-                      document.getElementById(
-                        "announcementContent"
-                      ) as HTMLTextAreaElement
-                    ).value.trim();
-                    if (!title || !content) {
-                      toast.error("Please fill in both fields");
-                      return;
-                    }
-                    handleAddAnnouncement(title, content);
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Post Announcement
-                </Button>
-              </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
+          <TabsList className="bg-white p-1 rounded-xl shadow-md mb-8 flex w-full border">
+            <TabsTrigger
+              value="assignments"
+              className="flex-1 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 flex items-center justify-center space-x-2 py-3"
+            >
+              <Calendar className="w-5 h-5" />
+              <span>Assignments</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="participants"
+              className="flex-1 data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700 flex items-center justify-center space-x-2 py-3"
+            >
+              <Users className="w-5 h-5" />
+              <span>Participants</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="announcements"
+              className="flex-1 data-[state=active]:bg-amber-50 data-[state=active]:text-amber-700 flex items-center justify-center space-x-2 py-3"
+            >
+              <Bell className="w-5 h-5" />
+              <span>Announcements</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="resources"
+              className="flex-1 data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-700 flex items-center justify-center space-x-2 py-3"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span>Resources</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <TabsContent value="assignments" className="focus:outline-none">
+              <AssignmentsTab
+                assignments={assignments}
+                classroomId={classroomId}
+                role={role}
+                onAssignmentCreated={updateAssignments}
+              />
+            </TabsContent>
+
+            <TabsContent value="participants" className="focus:outline-none">
+              <ParticipantsTab
+                participants={participants}
+                classRoomId={classroomId || ""}
+                onRoleUpdate={handleRoleUpdate}
+                Role={role || ""}
+              />
+            </TabsContent>
+
+            <TabsContent value="announcements" className="focus:outline-none">
+              <AnnouncementsTab
+                announcements={announcements}
+                assignments={assignments}
+                classroomId={classroomId}
+                role={role}
+                user={user}
+                onAnnouncementCreated={updateAnnouncements}
+              />
+            </TabsContent>
+
+            <TabsContent value="resources" className="focus:outline-none">
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-gray-100">
+                <BookOpen className="w-16 h-16 text-emerald-400 mb-4" />
+                <h3 className="text-xl font-medium text-gray-800 mb-2">Resources Coming Soon</h3>
+                <p className="text-gray-600 text-center max-w-md">
+                  This feature is currently under development. Check back soon for class materials, readings, and more!
+                </p>
+              </div>
+            </TabsContent>
+          </motion.div>
+        </Tabs>
+      </motion.div>
+      <Toaster />
+    </ScrollArea>
   );
 };
 
