@@ -141,13 +141,6 @@ button:focus-visible {
   }
 }
 
-input {
-  color: white;
-}
-textarea{
-  color: white;
-}
-
 .modal-backdrop {
   position: fixed;
   top: 0;
