@@ -1,73 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "../components/ui/card"; // Adjust imports based on your UI library
+} from "../components/ui/card";
 import { TabsContent } from "../components/ui/tabs";
 import { Participants } from "@/types/Participants";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
-// Define the props for the component
 type ParticipantsTabProps = {
   participants: Participants[];
   classRoomId: string;
   onRoleUpdate: (userId: number, newRole: string) => void;
+  Role: string;
 };
 
-const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ participants, classRoomId, onRoleUpdate }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+const ParticipantsTab: React.FC<ParticipantsTabProps> = ({
+  participants,
+  classRoomId,
+  onRoleUpdate,
+  Role,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Participants | null>(null);
+  const [creater, setCreater] = useState<Participants | null>(null);
+  const [teachers, setTeachers] = useState<Participants[]>([]);
+  const [students, setStudents] = useState<Participants[]>([]);
 
-  // Function to open the modal and set the selected user
+  useEffect(() => {
+    const createrUser = participants.find((p) => p.role === "CREATER") || null;
+    const teacherUsers = participants.filter((p) => p.role === "TEACHER");
+    const studentUsers = participants.filter((p) => p.role === "STUDENT");
+
+    setCreater(createrUser);
+    setTeachers(teacherUsers);
+    setStudents(studentUsers);
+  }, [participants]);
+
   const handleUserClick = (user: Participants) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
+    if (Role === "CREATER") {
+      setSelectedUser(user);
+      setIsModalOpen(true);
+    }
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
   };
 
-  const updateRoleInBackend = async (userId: number, classroomId: number, newRoleName: string) => {
+  const updateRoleInBackend = async (
+    userId: number,
+    classroomId: string,
+    newRoleName: string
+  ) => {
     try {
-      console.log(userId, classroomId, newRoleName);
       const response = await axios.put(
         `http://localhost:8080/api/userclassroom/updaterole`,
-        {
-          userId,
-          classroomId,
-          newRoleName
-        },
+        { userId, classroomId, newRoleName },
         { withCredentials: true }
       );
-
-      console.log(response.data);
       toast.success(response.data);
       return true;
     } catch (error) {
-      toast.error("Error updating role:" + error);
-      console.error("Error updating role:", error);
+      toast.error("Error updating role: " + error);
       return false;
     }
   };
-  // Function to handle role update
+
   const handleRoleUpdate = async (newRole: string) => {
+    if (Role !== "CREATER") {
+      toast.error("Only the class CREATER can update roles!");
+      return;
+    }
     if (selectedUser) {
-      // Update the user's role in the state (or send to the backend)
       const success = await updateRoleInBackend(selectedUser.id, classRoomId, newRole);
-      const updatedParticipants = participants.map((user) =>
-        user.id === selectedUser.id ? { ...user, role: newRole } : user
-      );
-      console.log("Updated Participants:", updatedParticipants);
       if (success) {
-        // Update the local state in the parent component
         onRoleUpdate(selectedUser.id, newRole);
         closeModal();
       }
@@ -76,40 +87,59 @@ const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ participants, classRo
 
   return (
     <TabsContent value="participants">
-      <Card className="bg-white shadow-sm">
+      <Card className="bg-white shadow-sm p-4">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-800">
-            Class Participants
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold">Class Participants</CardTitle>
           <CardDescription>Total participants: {participants.length}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {participants.map((user) => (
+          {creater && (
+            <div>
+              <h2 className="text-xl font-bold">Creater</h2>
               <div
-                key={user.id}
-                className="p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 cursor-pointer"
-                onClick={() => handleUserClick(user)} 
+                className="p-4 bg-yellow-100 border border-yellow-400 rounded-lg cursor-pointer"
+                onClick={() => handleUserClick(creater)}
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                    {user.fullName.charAt(0)}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800">{user.fullName}</h3>
-                    <p className="text-sm text-gray-600">{user.email}</p>
-                    <span className="inline-block px-2 py-1 mt-2 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                      {user.role}
-                    </span>
-                  </div>
-                </div>
+                <p className="font-semibold">{creater.fullName}</p>
+                <p className="text-sm text-gray-600">{creater.email}</p>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {teachers.length > 0 && (
+            <div className="mt-4">
+              <h2 className="text-xl font-bold">Teachers</h2>
+              {teachers.map((teacher) => (
+                <div
+                  key={teacher.id}
+                  className="p-4 bg-blue-100 border border-blue-400 rounded-lg cursor-pointer"
+                  onClick={() => handleUserClick(teacher)}
+                >
+                  <p className="font-semibold">{teacher.fullName}</p>
+                  <p className="text-sm text-gray-600">{teacher.email}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {students.length > 0 && (
+            <div className="mt-4">
+              <h2 className="text-xl font-bold">Students</h2>
+              {students.map((student) => (
+                <div
+                  key={student.id}
+                  className="p-4 bg-green-100 border border-green-400 rounded-lg cursor-pointer"
+                  onClick={() => handleUserClick(student)}
+                >
+                  <p className="font-semibold">{student.fullName}</p>
+                  <p className="text-sm text-gray-600">{student.email}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Modal for User Profile and Role Update */}
       {isModalOpen && selectedUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg w-96">
@@ -120,27 +150,15 @@ const ParticipantsTab: React.FC<ParticipantsTabProps> = ({ participants, classRo
               <select
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                 value={selectedUser.role}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, role: e.target.value })
-                }
+                onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
               >
                 <option value="STUDENT">STUDENT</option>
                 <option value="TEACHER">TEACHER</option>
               </select>
             </div>
             <div className="flex justify-end space-x-2">
-              <button
-                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-                onClick={closeModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                onClick={() => handleRoleUpdate(selectedUser.role)}
-              >
-                Update Role
-              </button>
+              <button className="px-4 py-2 bg-gray-300 rounded-md" onClick={closeModal}>Cancel</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md" onClick={() => handleRoleUpdate(selectedUser.role)}>Update Role</button>
             </div>
           </div>
         </div>

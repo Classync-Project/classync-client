@@ -39,15 +39,12 @@ const ViewClass: React.FC = () => {
   ); // State to manage comment inputs for each announcement
   const [comments, setComments] = useState({});
   const { user } = useSelector((state: any) => state.user) || {};
-  console.log(user);
 
   const userEmail = localStorage.getItem("useremail");
   const navigate = useNavigate();
   const location = useLocation();
   const role = location.state?.role;
-  console.log("Role : ", role);
-  // const { user } = useSelector((state: any) => state.user) || {};
-  // console.log("user : ", user);
+  // console.log("Role : ", role);
 
   // Fetch assignments
   useEffect(() => {
@@ -227,13 +224,20 @@ const ViewClass: React.FC = () => {
 
         <TabsContent value="assignments">
           <div className="flex justify-end mb-6">
-            <Button
-              onClick={() => setShowModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>New Assignment</span>
-            </Button>
+            {
+              role === "STUDENT"
+                ?
+                <>
+                </>
+                :
+                <Button
+                  onClick={() => setShowModal(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>New Assignment</span>
+                </Button>
+            }
           </div>
 
           <div className="">
@@ -245,7 +249,7 @@ const ViewClass: React.FC = () => {
               assignments.map((assignment) => (
                 <Card
                   key={assignment.id}
-                  className="w-full hover:shadow-lg transition-shadow duration-200 cursor-pointer bg-white"
+                  className="w-full m-2 hover:shadow-lg transition-shadow duration-200 cursor-pointer bg-white"
                   onClick={() =>
                     navigate(
                       `/classrooms/${classroomId}/assignments/${assignment.id}`
@@ -270,21 +274,28 @@ const ViewClass: React.FC = () => {
           participants={participants || ""}
           classRoomId={classroomId || ""}
           onRoleUpdate={handleRoleUpdate}
+          Role={role || ""}
         />
-
 
         <TabsContent value="announcements">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">
               Class Announcements
             </h2>
-            <Button
-              onClick={() => setShowAnnouncementModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>New Announcement</span>
-            </Button>
+            {
+              role === "STUDENT"
+                ?
+                <>
+                </>
+                :
+                <Button
+                  onClick={() => setShowAnnouncementModal(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>New Announcement</span>
+                </Button>
+            }
           </div>
 
           <div className="grid gap-6 grid-cols-4">
@@ -385,6 +396,7 @@ const ViewClass: React.FC = () => {
             </div>
           </div>
         </TabsContent>
+
       </Tabs>
       {/* Modals */}
       {showModal && (

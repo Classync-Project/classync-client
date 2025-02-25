@@ -9,25 +9,30 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state: any) => state.user) || {};
 
   const handleLogout = async () => {
+
+    localStorage.removeItem("useremail");
+    // navigate("/");
     try {
       await axios.post(
-        "http://localhost:8080/logout",
+        `http://localhost:8080/api/logout`,
         {},
         { withCredentials: true }
       );
-
+      
       dispatch({ type: "CLEAR_USER" });
       console.log("Logged out");
-      localStorage.removeItem("useremail");
     } catch (error) {
       console.error(error);
+      // window.location.reload();
     }
   };
 
