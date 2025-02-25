@@ -349,11 +349,24 @@ const ViewClass = () => {
       <div className="flex items-center justify-center min-h-screen bg-red-50">
         <div className="p-8 bg-white rounded-lg shadow-lg text-center">
           <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 text-red-600">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
-          <h3 className="mb-2 text-xl font-semibold text-red-800">Error Loading Classroom</h3>
+          <h3 className="mb-2 text-xl font-semibold text-red-800">
+            Error Loading Classroom
+          </h3>
           <p className="mb-4 text-gray-600">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -471,9 +484,12 @@ const ViewClass = () => {
             <TabsContent value="resources" className="focus:outline-none">
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-gray-100">
                 <BookOpen className="w-16 h-16 text-emerald-400 mb-4" />
-                <h3 className="text-xl font-medium text-gray-800 mb-2">Resources Coming Soon</h3>
+                <h3 className="text-xl font-medium text-gray-800 mb-2">
+                  Resources Coming Soon
+                </h3>
                 <p className="text-gray-600 text-center max-w-md">
-                  This feature is currently under development. Check back soon for class materials, readings, and more!
+                  This feature is currently under development. Check back soon
+                  for class materials, readings, and more!
                 </p>
               </div>
             </TabsContent>

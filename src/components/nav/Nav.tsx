@@ -9,19 +9,18 @@ import { useNavigate } from "react-router-dom";
 
 export default function Nav() {
   const user = useSelector((state: any) => state.user.user) || null;
-  const useremail = localStorage.getItem("useremail"); // Get user email from localStorage
+  const useremail = localStorage.getItem("useremail");
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   const handleTriggerClick = (modalType: string) => {
-    setActiveModal(modalType); // Set modal state to either "create" or "join"
+    setActiveModal(modalType);
   };
 
   const closeModal = () => {
-    setActiveModal(null); // Close any active modal
+    setActiveModal(null);
   };
 
-  // Nav links
   const navLinks = [
     { href: "/dashboard", text: "Dashboard" },
     { href: "/courses", text: "Courses" },
@@ -29,7 +28,6 @@ export default function Nav() {
     { href: "/resources", text: "Resources" },
   ];
 
-  // Add "My Class" link only if user is logged in
   if (useremail) {
     navLinks.push({ href: "/myclass", text: "My Class" });
   }
@@ -43,10 +41,10 @@ export default function Nav() {
             {/* Logo */}
             <div className="flex items-center">
               <a
-                href="/" // Set href to "/" for the home page
+                href="/"
                 onClick={(e) => {
-                  e.preventDefault(); // Prevent default link behavior
-                  navigate("/"); // Navigate to the home page
+                  e.preventDefault();
+                  navigate("/");
                 }}
                 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text hover:from-pink-600 hover:to-purple-400 transition-all duration-500 cursor-pointer"
               >
