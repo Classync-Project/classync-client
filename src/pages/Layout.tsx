@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       <nav className="w-full border-b border-gray-800/20 bg-[#0B0F17]">
         <div className="w-full max-w-[2000px] mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            <span className="text-xl font-bold text-purple-400">ClassSync</span>
+            <span className="text-xl font-bold text-purple-400">Classync</span>
             <div className="flex space-x-6 text-gray-400">
               {navLinks.map((link) => (
                 <a

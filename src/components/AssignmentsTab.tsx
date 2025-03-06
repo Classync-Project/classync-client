@@ -11,10 +11,8 @@ import {
 import { Button } from "../components/ui/button";
 import {
   Plus,
-  X,
   ChevronRight,
   Calendar,
-  Clock,
   FileText,
   Filter,
   Search,
@@ -79,7 +77,10 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
     );
   };
 
-  const filteredAssignments = assignments
+  const filteredAssignments = assignments?.length > 0 &&
+    assignments
+    .slice()
+    .reverse()  
     .filter(assignment => {
       // Apply search filter
       if (searchQuery && !assignment.title.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -201,7 +202,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
       </div>
 
       <AnimatePresence>
-        {filteredAssignments.length === 0 ? (
+        {Array.isArray(filteredAssignments) && filteredAssignments.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -226,9 +227,9 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredAssignments.map((assignment, index) => {
+            {Array.isArray(filteredAssignments) && filteredAssignments.map((assignment, index) => {
               const dueStatus = getDueDateLabel(assignment.dueDate);
-              const isBookmarked = bookmarkedAssignments.includes(assignment.id);
+              const isBookmarked = bookmarkedAssignments.includes(Number(assignment.id));
 
               return (
                 <motion.div
@@ -252,7 +253,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                                 className="h-8 w-8 p-0"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  toggleBookmark(assignment.id);
+                                  toggleBookmark(Number(assignment.id));
                                 }}
                               >
                                 {isBookmarked ? (

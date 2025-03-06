@@ -48,7 +48,7 @@ export default function Nav() {
                 }}
                 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text hover:from-pink-600 hover:to-purple-400 transition-all duration-500 cursor-pointer"
               >
-                ClassSync
+                Classync
               </a>
             </div>
 
@@ -195,8 +195,9 @@ export default function Nav() {
                     toast.success(
                       `Classroom "${data.className}" created successfully!`
                     );
-                    console.log(data);
-                    navigate(`/myclass`);
+                    // console.log(data);
+                    navigate(`/classrooms/${data.id}`);
+                    // navigate(`/myclass`);
                   } else {
                     throw new Error("Failed to create classroom.");
                   }

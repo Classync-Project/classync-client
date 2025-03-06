@@ -1,204 +1,4 @@
-// import React, { useEffect, useState } from "react";
-// import {
-//   Tabs,
-//   TabsContent,
-//   TabsList,
-//   TabsTrigger,
-// } from "../components/ui/tabs";
-// import {
-//   Calendar,
-//   Users,
-//   Bell,
-// } from "lucide-react";
-// import axios from "axios";
-// import { useLocation, useParams } from "react-router-dom";
-// import { useSelector } from "react-redux";
-// import { Participants } from "../types/Participants";
-// import { Assignment } from "../types/Assignment";
-// import ParticipantsTab from "../components/ParticipantsTab";
-// import AssignmentsTab from "../components/AssignmentsTab";
-// import AnnouncementsTab from "../components/AnnouncementsTab";
-
-// const ViewClass = () => {
-//   const { classroomId } = useParams<{ classroomId: string }>();
-//   const [participants, setParticipants] = useState<Participants[]>([]);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<string | null>(null);
-//   const [assignments, setAssignments] = useState<Assignment[]>([]);
-//   const [announcements, setAnnouncements] = useState<any[]>([]);
-
-//   const location = useLocation();
-//   const role = location.state?.role;
-//   const { user } = useSelector((state: any) => state.user) || {};
-
-//   // Fetch participants
-//   useEffect(() => {
-//     const fetchParticipants = async () => {
-//       try {
-//         const { data } = await axios.get(
-//           `http://localhost:8080/api/classrooms/${classroomId}/participants`,
-//           { withCredentials: true }
-//         );
-//         setParticipants(data);
-//       } catch (err) {
-//         setError(err instanceof Error ? err.message : "An error occurred");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchParticipants();
-//   }, [classroomId]);
-
-//   // Fetch assignments
-//   useEffect(() => {
-//     const fetchAssignments = async () => {
-//       try {
-//         const { data } = await axios.get(
-//           `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
-//           { withCredentials: true }
-//         );
-//         setAssignments(data);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-
-//     fetchAssignments();
-//   }, [classroomId]);
-
-//   // Fetch announcements
-//   useEffect(() => {
-//     const fetchAnnouncements = async () => {
-//       try {
-//         const { data } = await axios.get(
-//           `http://localhost:8080/api/announcements/${classroomId}`,
-//           { withCredentials: true }
-//         );
-//         setAnnouncements(data);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-
-//     fetchAnnouncements();
-//   }, [classroomId]);
-
-//   const handleRoleUpdate = (userId: number, newRole: string) => {
-//     setParticipants((prevParticipants) =>
-//       prevParticipants.map((user) =>
-//         user.id === userId ? { ...user, role: newRole } : user
-//       )
-//     );
-//   };
-
-//   // Update assignments after new creation
-//   const updateAssignments = async () => {
-//     try {
-//       const { data } = await axios.get(
-//         `http://localhost:8080/api/classrooms/assignments/${classroomId}/assignments`,
-//         { withCredentials: true }
-//       );
-//       setAssignments(data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   // Update announcements after new creation
-//   const updateAnnouncements = async () => {
-//     try {
-//       const { data } = await axios.get(
-//         `http://localhost:8080/api/announcements/${classroomId}`,
-//         { withCredentials: true }
-//       );
-//       setAnnouncements(data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-//       </div>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="p-6 bg-red-50 rounded-lg text-red-600">
-//           Error: {error}
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="container mx-auto p-4">
-//       <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
-//         <TabsList className="bg-white p-1 rounded-xl shadow-sm mb-6">
-//           <TabsTrigger
-//             value="assignments"
-//             className="flex items-center space-x-2"
-//           >
-//             <Calendar className="w-4 h-4" />
-//             <span>Assignments</span>
-//           </TabsTrigger>
-//           <TabsTrigger
-//             value="participants"
-//             className="flex items-center space-x-2"
-//           >
-//             <Users className="w-4 h-4" />
-//             <span>Participants</span>
-//           </TabsTrigger>
-//           <TabsTrigger
-//             value="announcements"
-//             className="flex items-center space-x-2"
-//           >
-//             <Bell className="w-4 h-4" />
-//             <span>Announcements</span>
-//           </TabsTrigger>
-//         </TabsList>
-
-//         <TabsContent value="assignments">
-//           <AssignmentsTab
-//             assignments={assignments}
-//             classroomId={classroomId}
-//             role={role}
-//             onAssignmentCreated={updateAssignments}
-//           />
-//         </TabsContent>
-
-//         <TabsContent value="participants">
-//           <ParticipantsTab
-//             participants={participants}
-//             classRoomId={classroomId || ""}
-//             onRoleUpdate={handleRoleUpdate}
-//             Role={role || ""}
-//           />
-//         </TabsContent>
-
-//         <TabsContent value="announcements">
-//           <AnnouncementsTab
-//             announcements={announcements}
-//             assignments={assignments}
-//             classroomId={classroomId}
-//             role={role}
-//             user={user}
-//             onAnnouncementCreated={updateAnnouncements}
-//           />
-//         </TabsContent>
-//       </Tabs>
-//     </div>
-//   );
-// };
-
-// export default ViewClass;
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Tabs,
   TabsContent,
@@ -239,6 +39,7 @@ const ViewClass = () => {
           `http://localhost:8080/api/classrooms/${classroomId}`,
           { withCredentials: true }
         );
+        console.log(data);
         setClassInfo(data);
       } catch (err) {
         console.error("Error fetching class info:", err);
@@ -304,7 +105,7 @@ const ViewClass = () => {
   const handleRoleUpdate = (userId: number, newRole: string) => {
     setParticipants((prevParticipants) =>
       prevParticipants.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user
+        user.id === String(userId) ? { ...user, role: newRole } : user
       )
     );
   };
@@ -385,8 +186,8 @@ const ViewClass = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto p-6"
-      >
+        className="container mx-auto p-6  text-white"
+      > 
         {classInfo && (
           <div className="mb-8">
             <motion.div
@@ -396,11 +197,11 @@ const ViewClass = () => {
               className="flex items-center justify-between"
             >
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                <h1 className="text-3xl font-bold text-gray-200 mb-1">
                   {classInfo.className || "Class Name"}
                 </h1>
                 <p className="text-gray-600">
-                  {classInfo.description || "Class Description"}
+                  {classInfo.description || ""}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
@@ -415,8 +216,8 @@ const ViewClass = () => {
           </div>
         )}
 
-        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
-          <TabsList className="bg-white p-1 rounded-xl shadow-md mb-8 flex w-full border">
+        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto mt-20 ">
+          <TabsList className=" p-1 rounded-xl shadow-md mb-8 flex w-full bg- py-3">
             <TabsTrigger
               value="assignments"
               className="flex-1 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 flex items-center justify-center space-x-2 py-3"
@@ -429,7 +230,7 @@ const ViewClass = () => {
               className="flex-1 data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700 flex items-center justify-center space-x-2 py-3"
             >
               <Users className="w-5 h-5" />
-              <span>Participants</span>
+              <span>People</span>
             </TabsTrigger>
             <TabsTrigger
               value="announcements"

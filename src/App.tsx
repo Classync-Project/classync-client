@@ -22,6 +22,9 @@ const App: React.FC = () => {
     try {
       const { data } = await axios.get("http://localhost:8080/api/user", {
         withCredentials: true,
+        headers : {
+          Accept : 'application/json',
+        }
       });
       if (data) {
         // console.log(data);
@@ -43,7 +46,7 @@ const App: React.FC = () => {
   // console.log(user);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 font-poppins">
       <ToastContainer
         position="top-right"
         autoClose={3000}
