@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Assignment } from "@/types/Assignment";
@@ -10,13 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Calendar, Clock, FileText } from "lucide-react";
+import { Calendar, Clock, FileText, ArrowLeft } from "lucide-react";
 
 const ViewAssignment: React.FC = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const { user } = useSelector((state: any) => state.user) || {};
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const submittedById = user?.id;
 
@@ -51,6 +52,15 @@ const ViewAssignment: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span>Back to Assignments</span>
+      </button>
+
       <Card className="border-0 shadow-lg rounded-xl bg-gradient-to-br from-white to-gray-50">
         <CardHeader className="space-y-4">
           <div className="flex items-center justify-between">

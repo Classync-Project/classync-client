@@ -67,6 +67,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
 
   useEffect(() => {
     // Fetch comments for all announcements initially
+    console.log("Announcements : ", announcements);
     announcements.forEach((announcement) => {
       fetchComments(announcement.id);
     });
@@ -125,7 +126,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
         ...prev,
         [announceId]: "",
       }));
-      
+
       // Fetch updated comments
       fetchComments(announceId);
     } catch (error) {
@@ -357,9 +358,9 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
                   <CardFooter className="pt-3 pb-4 flex flex-col">
                     <div className="w-full">
                       <div className="flex items-center gap-2 mb-3">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="text-gray-500 hover:text-blue-600"
                           onClick={() => toggleComments(announcement.id)}
                         >
@@ -367,7 +368,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
                           {comments[announcement.id]?.length || 0} Comments
                         </Button>
                       </div>
-                      
+
                       {expandedComments[announcement.id] && comments[announcement.id]?.length > 0 && (
                         <div className="bg-gray-50 p-3 rounded-lg mb-3 space-y-3 max-h-60 overflow-y-auto">
                           {comments[announcement.id]?.map((comment, idx) => (
