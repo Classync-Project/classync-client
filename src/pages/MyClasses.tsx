@@ -52,7 +52,7 @@ const MyClasses: React.FC = () => {
   }, [useremail]);
 
   // Get emoji based on class name or role
-  const getClassEmoji = (className, role) => {
+  const getClassEmoji = (className : any, role : any) => {
     const classNameLower = className.toLowerCase();
     const roleLower = role.toLowerCase();
 
@@ -98,7 +98,7 @@ const MyClasses: React.FC = () => {
   };
 
   // Get role-specific emoji
-  const getRoleEmoji = (role) => {
+  const getRoleEmoji = (role:any) => {
     const roleLower = role.toLowerCase();
     if (roleLower.includes("teacher") || roleLower.includes("creater"))
       return "👨‍🏫";
@@ -108,7 +108,7 @@ const MyClasses: React.FC = () => {
   };
 
   // Get card gradient colors based on class name or emoji
-  const getCardGradient = (className, emoji) => {
+  const getCardGradient = (className:any, emoji:any) => {
     if (emoji === "🧮") return "from-blue-600 to-indigo-800";
     if (emoji === "🔬") return "from-green-600 to-teal-800";
     if (emoji === "📜") return "from-amber-600 to-yellow-700";

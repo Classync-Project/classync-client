@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Tabs,
   TabsContent,
@@ -26,7 +26,7 @@ const ViewClass = () => {
   const [error, setError] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  // const [classInfo, setClassInfo] = useState<any>(null);
+  const [classInfo, setClassInfo] = useState<any>(null);
   const [doubts, setDoubts] = useState<any[]>([]); // Add state for doubts
 
   const location = useLocation();
@@ -34,21 +34,22 @@ const ViewClass = () => {
   const { user } = useSelector((state: any) => state.user) || {};
 
   // Fetch class info
-  // useEffect(() => {
-  //   const fetchClassInfo = async () => {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `http://localhost:8080/api/classrooms/${classroomId}`,
-  //         { withCredentials: true }
-  //       );
-  //       setClassInfo(data);
-  //     } catch (err) {
-  //       console.error("Error fetching class info:", err);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchClassInfo = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/classrooms/${classroomId}`,
+          { withCredentials: true }
+        );
+        console.log(data);
+        setClassInfo(data);
+      } catch (err) {
+        console.error("Error fetching class info:", err);
+      }
+    };
 
-  //   fetchClassInfo();
-  // }, [classroomId]);
+    fetchClassInfo();
+  }, [classroomId]);
 
   // Fetch participants
   useEffect(() => {
@@ -106,7 +107,7 @@ const ViewClass = () => {
   const handleRoleUpdate = (userId: number, newRole: string) => {
     setParticipants((prevParticipants) =>
       prevParticipants.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user
+        user.id === String(userId) ? { ...user, role: newRole } : user
       )
     );
   };
@@ -217,9 +218,9 @@ const ViewClass = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto p-6"
-      >
-        {/* {classInfo && (
+        className="container mx-auto p-6  text-white"
+      > 
+        {classInfo && (
           <div className="mb-8">
             <motion.div
               initial={{ y: -20 }}
@@ -228,11 +229,11 @@ const ViewClass = () => {
               className="flex items-center justify-between"
             >
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                <h1 className="text-3xl font-bold text-gray-200 mb-1">
                   {classInfo.className || "Class Name"}
                 </h1>
                 <p className="text-gray-600">
-                  {classInfo.description || "Class Description"}
+                  {classInfo.description || ""}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
@@ -245,10 +246,10 @@ const ViewClass = () => {
               </div>
             </motion.div>
           </div>
-        )} */}
+        )} 
 
-        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto">
-          <TabsList className="bg-white p-1 rounded-xl shadow-md mb-8 flex w-full border">
+        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto mt-20 ">
+          <TabsList className=" p-1 rounded-xl shadow-md mb-8 flex w-full bg- py-3">
             <TabsTrigger
               value="assignments"
               className="flex-1 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 flex items-center justify-center space-x-2 py-3"
@@ -261,7 +262,7 @@ const ViewClass = () => {
               className="flex-1 data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700 flex items-center justify-center space-x-2 py-3"
             >
               <Users className="w-5 h-5" />
-              <span>Participants</span>
+              <span>People</span>
             </TabsTrigger>
             <TabsTrigger
               value="announcements"

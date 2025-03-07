@@ -179,7 +179,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">
+        <h2 className="text-2xl font-bold text-gray-200">
           Class Announcements
         </h2>
         {role !== "STUDENT" && (

@@ -215,3 +215,13 @@ button:focus-visible {
 }
 
 
+@font-face {
+  font-family: 'Poppins';
+  /* src: url("/client/public/fonts/Poppins/Poppins-Medium.ttf"); */
+  src: url("/fonts/Poppins/Poppins-Medium.ttf");
+
+}
+
+.font-poppins{
+  font-family: 'Poppins', sans-serif;
+}
