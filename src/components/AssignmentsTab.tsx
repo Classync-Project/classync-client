@@ -241,34 +241,12 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                   exit="exit"
                   layoutId={`assignment-${assignment.id}`}
                 >
-                  <Card className="h-full hover:shadow-md transition-shadow duration-200 cursor-pointer bg-white border-t-4 border-t-blue-500 flex flex-col">
+                  <Card className="h-full hover:shadow-md transition-shadow duration-200 cursor-pointer bg-white border-t-4 border-t-blue-500 flex flex-col" 
+                  onClick={() =>
+                    navigate(`/classrooms/${classroomId}/assignments/${assignment.id}`)
+                  }>
                     <CardHeader className="relative pb-2">
-                      <div className="absolute right-4 top-4">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleBookmark(Number(assignment.id));
-                                }}
-                              >
-                                {isBookmarked ? (
-                                  <BookmarkCheck className="h-5 w-5 text-blue-600" />
-                                ) : (
-                                  <Bookmark className="h-5 w-5 text-gray-400" />
-                                )}
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{isBookmarked ? "Remove bookmark" : "Bookmark"}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
+                      
                       <Badge className={`mb-2 ${dueStatus.color}`}>
                         {dueStatus.text}
                       </Badge>
@@ -286,7 +264,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                         <Calendar className="h-4 w-4 mr-1" />
                         {new Date(assignment.dueDate).toLocaleDateString()}
                       </div>
-                      <Button
+                      {/* <Button
                         variant="ghost"
                         size="sm"
                         className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
@@ -295,7 +273,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                         }
                       >
                         View <ChevronRight className="ml-1 h-4 w-4" />
-                      </Button>
+                      </Button> */}
                     </CardFooter>
                   </Card>
                 </motion.div>

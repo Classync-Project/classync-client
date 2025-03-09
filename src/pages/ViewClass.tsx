@@ -16,7 +16,8 @@ import AnnouncementsTab from "../components/AnnouncementsTab";
 import { motion } from "framer-motion";
 import { Toaster } from "../components/ui/sonner";
 import { ScrollArea } from "../components/ui/scroll-area";
-import { Calendar, Users, Bell, BookOpen } from "lucide-react";
+import { Calendar, Users, Bell, BookOpen, HelpCircle } from "lucide-react";
+import DoubtsTab from "../components/DoubtsTab";
 
 const ViewClass = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
@@ -26,6 +27,7 @@ const ViewClass = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [classInfo, setClassInfo] = useState<any>(null);
+  const [doubts, setDoubts] = useState<any[]>([]); // Add state for doubts
 
   const location = useLocation();
   const role = location.state?.role;
@@ -136,6 +138,36 @@ const ViewClass = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchDoubts = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/doubts/${classroomId}`,
+          { withCredentials: true }
+        );
+        // console.log('fetched doubts : ', doubts);
+        setDoubts(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDoubts();
+  }, [classroomId]);
+
+  // Update doubts after new creation
+  const updateDoubts = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:8080/api/doubts/${classroomId}`,
+        { withCredentials: true }
+      );
+      setDoubts(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -214,7 +246,7 @@ const ViewClass = () => {
               </div>
             </motion.div>
           </div>
-        )}
+        )} 
 
         <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto mt-20 ">
           <TabsList className=" p-1 rounded-xl shadow-md mb-8 flex w-full bg- py-3">
@@ -240,11 +272,11 @@ const ViewClass = () => {
               <span>Announcements</span>
             </TabsTrigger>
             <TabsTrigger
-              value="resources"
+              value="doubts"
               className="flex-1 data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-700 flex items-center justify-center space-x-2 py-3"
             >
-              <BookOpen className="w-5 h-5" />
-              <span>Resources</span>
+              <HelpCircle className="w-5 h-5" />
+              <span>Doubts</span>
             </TabsTrigger>
           </TabsList>
 
@@ -294,6 +326,17 @@ const ViewClass = () => {
                 </p>
               </div>
             </TabsContent>
+
+            <TabsContent value="doubts" className="focus:outline-none">
+              <DoubtsTab
+                doubts={doubts}
+                classroomId={classroomId}
+                role={role}
+                user={user}
+                onDoubtCreated={updateDoubts}
+              />
+            </TabsContent>
+
           </motion.div>
         </Tabs>
       </motion.div>
