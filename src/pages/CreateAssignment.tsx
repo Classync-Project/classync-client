@@ -21,6 +21,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   });
 
   const [file, setFile] = useState<File | null>(null);
+  const [solutionFile, setSolutionFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
 
   const updateForm = (field: string, value: string) => {
@@ -30,9 +31,14 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      toast.error("Please upload a PDF file.");
+      toast.error("Please upload a PDF file for the assignment.");
       return;
     }
+    if (!solutionFile) {
+      toast.error("Please upload a solution file.");
+      return;
+    }
+
     const submissionData = new FormData();
     submissionData.append("title", formData.title);
     submissionData.append("content", formData.content);
@@ -40,6 +46,8 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     submissionData.append("createdById", formData.createdById);
     submissionData.append("dueDate", formData.dueDate);
     submissionData.append("file", file);
+    submissionData.append("solutionFile", solutionFile);
+
     try {
       const response = await axios.post(
         "http://localhost:8080/api/classrooms/assignments/add",
@@ -99,11 +107,11 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             className="w-full p-3 border-none rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             required
           />
+          
+          {/* Assignment File Upload */}
           <div
             className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${
-              dragging
-                ? "border-blue-500 bg-blue-900"
-                : "border-gray-700 bg-gray-800"
+              dragging ? "border-blue-500 bg-blue-900" : "border-gray-700 bg-gray-800"
             }`}
             onDragOver={(e) => {
               e.preventDefault();
@@ -114,7 +122,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               e.preventDefault();
               setDragging(false);
               const droppedFile = e.dataTransfer.files?.[0];
-              if (droppedFile && droppedFile.type === "application/pdf") {
+              if (droppedFile?.type === "application/pdf") {
                 setFile(droppedFile);
               } else {
                 toast.error("Only PDF files are allowed.");
@@ -128,17 +136,29 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               id="fileUpload"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
-            <label
-              htmlFor="fileUpload"
-              className="cursor-pointer text-gray-300"
-            >
-              {file ? (
-                <span className="text-blue-400 font-medium">{file.name}</span>
-              ) : (
-                "Drag & Drop a PDF or Click to Upload"
-              )}
+            <label htmlFor="fileUpload" className="cursor-pointer text-gray-300">
+              {file ? <span className="text-blue-400 font-medium">{file.name}</span> : "Upload Assignment PDF"}
             </label>
           </div>
+
+          {/* Solution File Upload */}
+          <div
+            className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${
+              dragging ? "border-green-500 bg-green-900" : "border-gray-700 bg-gray-800"
+            }`}
+          >
+            <input
+              type="file"
+              accept="application/pdf"
+              className="hidden"
+              id="solutionUpload"
+              onChange={(e) => setSolutionFile(e.target.files?.[0] || null)}
+            />
+            <label htmlFor="solutionUpload" className="cursor-pointer text-gray-300">
+              {solutionFile ? <span className="text-green-400 font-medium">{solutionFile.name}</span> : "Upload Solution PDF"}
+            </label>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-all"

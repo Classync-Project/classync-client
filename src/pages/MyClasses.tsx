@@ -5,7 +5,6 @@ import {
   CardTitle,
   CardContent,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
 import { Classroom } from "../types/Classroom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -19,6 +18,7 @@ interface UserClassroom {
 const MyClasses: React.FC = () => {
   const [userClassrooms, setUserClassrooms] = useState<UserClassroom[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const useremail = localStorage.getItem("useremail");
   const navigate = useNavigate();
 
@@ -51,8 +51,32 @@ const MyClasses: React.FC = () => {
     fetchClassrooms();
   }, [useremail]);
 
+  // Copy classroom code to clipboard
+  const copyToClipboard = (e: React.MouseEvent, code: string) => {
+    e.stopPropagation(); // Prevent card click event from triggering
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setCopiedCode(code);
+        toast.success("Classroom code copied to clipboard!");
+        // Reset the copied state after 2 seconds
+        setTimeout(() => setCopiedCode(null), 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+        toast.error("Failed to copy code");
+      });
+  };
+
+  // Handle card click to navigate to classroom
+  const handleCardClick = (classroomId: string, role: string) => {
+    navigate(`/classrooms/${classroomId}`, {
+      state: { role },
+    });
+  };
+
   // Get emoji based on class name or role
-  const getClassEmoji = (className : any, role : any) => {
+  const getClassEmoji = (className: any, role: any) => {
     const classNameLower = className.toLowerCase();
     const roleLower = role.toLowerCase();
 
@@ -98,7 +122,7 @@ const MyClasses: React.FC = () => {
   };
 
   // Get role-specific emoji
-  const getRoleEmoji = (role:any) => {
+  const getRoleEmoji = (role: any) => {
     const roleLower = role.toLowerCase();
     if (roleLower.includes("teacher") || roleLower.includes("creater"))
       return "👨‍🏫";
@@ -108,7 +132,7 @@ const MyClasses: React.FC = () => {
   };
 
   // Get card gradient colors based on class name or emoji
-  const getCardGradient = (className:any, emoji:any) => {
+  const getCardGradient = (className: any, emoji: any) => {
     if (emoji === "🧮") return "from-blue-600 to-indigo-800";
     if (emoji === "🔬") return "from-green-600 to-teal-800";
     if (emoji === "📜") return "from-amber-600 to-yellow-700";
@@ -171,36 +195,48 @@ const MyClasses: React.FC = () => {
             <p className="text-center text-2xl text-gray-300 font-semibold mb-8">
               You are not enrolled in any classes yet.
             </p>
-            <Button
+            <button
               className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white text-lg font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-pink-500/20"
               onClick={() => navigate("/join-class")}
             >
               Discover Classes 🔍
-            </Button>
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {userClassrooms.map(({ classroom, role }, index) => {
+            {userClassrooms.map(({ classroom, role }) => {
               const emoji = getClassEmoji(classroom.className, role);
               const gradient = getCardGradient(classroom.className, emoji);
+              const isCopied = copiedCode === classroom.classroomCode;
 
               return (
                 <Card
+                  id={classroom.id}
                   key={classroom.classroomCode}
-                  className={`bg-gradient-to-br ${gradient} shadow-xl border-none rounded-3xl overflow-hidden hover:scale-105 hover:shadow-2xl transition-all duration-300 group relative`}
+                  className={`bg-gradient-to-br ${gradient} shadow-xl border-none rounded-3xl overflow-hidden  transition-all duration-300 group relative cursor-pointer`}
+                  onClick={() => handleCardClick(classroom.id, role)}
                 >
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 z-0"></div>
-                  <div className="absolute top-0 right-0 p-4 z-10">
-                    <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                      {classroom.classroomCode}
-                    </div>
+                  <div className="absolute top-0 right-0 p-4 z-20">
+                    <button
+                      onClick={(e) =>
+                        copyToClipboard(e, classroom.classroomCode)
+                      }
+                      className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-white/30 transition-all duration-300"
+                      title="Click to copy classroom code"
+                    >
+                      <span>{classroom.classroomCode}</span>
+                      <span className="text-xs">
+                        {isCopied ? "✓ Copied!" : "📋"}
+                      </span>
+                    </button>
                   </div>
 
-                  <div className="absolute -bottom-10 -right-10 text-8xl opacity-20 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12 z-0">
+                  <div className="absolute -bottom-10 -right-10 text-8xl opacity-20 transition-transform duration-500 z-0">
                     {emoji}
                   </div>
 
-                  <CardHeader className="relative z-10">
+                  <CardHeader className="relative z-10 pb-2">
                     <div className="flex items-center gap-4">
                       <span
                         className="text-5xl bg-white/10 rounded-full p-3 backdrop-blur-sm"
@@ -228,17 +264,10 @@ const MyClasses: React.FC = () => {
                     </div>
                   </CardHeader>
 
-                  <CardContent className="relative z-10 mt-4">
-                    <Button
-                      className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-none py-4 text-lg font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:bg-white/30"
-                      onClick={() => {
-                        navigate(`/classrooms/${classroom.id}`, {
-                          state: { role },
-                        });
-                      }}
-                    >
-                      Enter Classroom <span className="text-xl ml-1">🚪</span>
-                    </Button>
+                  <CardContent className="relative z-10 mt-4 pb-6">
+                    <div className="text-center text-white text-sm font-medium opacity-80">
+                      Click to enter classroom
+                    </div>
                   </CardContent>
                 </Card>
               );
