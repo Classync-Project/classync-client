@@ -5,8 +5,6 @@ import Courses from "./pages/Courses";
 import Resources from "./pages/Resources";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
-// import Profile from './pages/Profile';
-// import Navbar from './components/Navbar';
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import Nav from "./components/nav/Nav";
@@ -15,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MyClasses from "./pages/MyClasses";
 import ViewClass from "./pages/ViewClass";
 import ViewAssignment from "./pages/ViewAssignment ";
+import CalendarPage from "./pages/CalendarPage";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -74,6 +73,7 @@ const App: React.FC = () => {
           <Route path="/myclass" element={<MyClasses />} />
           <Route path="/classrooms/:classroomId" element={<ViewClass />} />
           <Route path="/classrooms/:classroomId/assignments/:assignmentId" element={<ViewAssignment />} />
+          <Route path="/calendar" element={<CalendarPage />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </Routes>
       </Router>

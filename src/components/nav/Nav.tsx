@@ -26,6 +26,7 @@ export default function Nav() {
     { href: "/courses", text: "Courses" },
     { href: "/tasks", text: "Tasks" },
     { href: "/resources", text: "Resources" },
+    { href: "/calendar", text: "Calendar" }, 
   ];
 
   if (useremail) {
