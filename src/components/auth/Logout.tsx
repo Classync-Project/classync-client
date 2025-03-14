@@ -11,14 +11,17 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar } from "../ui/avatar";
 import ProfileCard from "../ProfileCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
   const dispatch = useDispatch();
   const [showProfileCard, setShowProfileCard] = useState(false);
   const { user } = useSelector((state: any) => state.user) || {};
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     localStorage.removeItem("useremail");
+    navigate("/");
     try {
       await axios.post(
         `http://localhost:8080/api/logout`,

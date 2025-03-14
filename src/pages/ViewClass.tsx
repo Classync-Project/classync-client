@@ -110,7 +110,7 @@ const ViewClass = () => {
         user.id === String(userId) ? { ...user, role: newRole } : user
       )
     );
-  };
+  };  
 
   // Update assignments after new creation
   const updateAssignments = async () => {

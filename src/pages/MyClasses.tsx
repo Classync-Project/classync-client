@@ -101,7 +101,7 @@ const MyClasses: React.FC = () => {
     if (classNameLower.includes("biology")) return "🧬";
 
     // Role-based default emojis
-    if (roleLower.includes("teacher") || roleLower.includes("creater"))
+    if (roleLower.includes("teacher") || roleLower.includes("creator"))
       return "👨‍🏫";
     if (roleLower.includes("student")) return "👨‍🎓";
 
@@ -124,7 +124,7 @@ const MyClasses: React.FC = () => {
   // Get role-specific emoji
   const getRoleEmoji = (role: any) => {
     const roleLower = role.toLowerCase();
-    if (roleLower.includes("teacher") || roleLower.includes("creater"))
+    if (roleLower.includes("teacher") || roleLower.includes("creator"))
       return "👨‍🏫";
     if (roleLower.includes("student")) return "👨‍🎓";
     if (roleLower.includes("admin")) return "🔑";
