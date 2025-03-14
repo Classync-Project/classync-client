@@ -67,7 +67,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
 
   useEffect(() => {
     // Fetch comments for all announcements initially
-    console.log("Announcements : ", announcements);
+    // console.log("Announcements : ", announcements);
     announcements.forEach((announcement) => {
       fetchComments(announcement.id);
     });
@@ -138,6 +138,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   const fetchComments = async (announcementId: string) => {
     try {
       const result = await CommentsService.getCommentsByAnnouncement(announcementId);
+      // console.log("comments", result);
       setComments((prev) => ({
         ...prev,
         [announcementId]: result,
@@ -374,12 +375,12 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
                           {comments[announcement.id]?.map((comment, idx) => (
                             <div key={idx} className="flex items-start gap-2">
                               <Avatar className="w-8 h-8">
-                                <AvatarImage src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user?.email || 'User')}&background=random`} />
-                                <AvatarFallback>{getInitials(comment.user?.email || 'User')}</AvatarFallback>
+                                <AvatarImage src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author?.email || 'User')}&background=random`} />
+                                <AvatarFallback>{getInitials(comment.author?.email || 'User')}</AvatarFallback>
                               </Avatar>
                               <div className="bg-white rounded-lg p-2 flex-1 shadow-sm">
                                 <div className="flex justify-between items-center mb-1">
-                                  <p className="text-xs font-medium">{comment.user?.email || 'User'}</p>
+                                  <p className="text-xs font-medium">{comment.author?.email || 'User'}</p>
                                   <span className="text-xs text-gray-400">{formatDate(comment.createdAt)}</span>
                                 </div>
                                 <p className="text-sm">{comment.content}</p>
