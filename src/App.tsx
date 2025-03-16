@@ -14,6 +14,7 @@ import MyClasses from "./pages/MyClasses";
 import ViewClass from "./pages/ViewClass";
 import ViewAssignment from "./pages/ViewAssignment ";
 import CalendarPage from "./pages/CalendarPage";
+import UpdateAssignment from "./pages/UpdateAssignment";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,8 @@ const App: React.FC = () => {
     try {
       const { data } = await axios.get("http://localhost:8080/api/user", {
         withCredentials: true,
-        headers : {
-          Accept : 'application/json',
+        headers: {
+          Accept: 'application/json',
         }
       });
       if (data) {
@@ -73,6 +74,8 @@ const App: React.FC = () => {
           <Route path="/myclass" element={<MyClasses />} />
           <Route path="/classrooms/:classroomId" element={<ViewClass />} />
           <Route path="/classrooms/:classroomId/assignments/:assignmentId" element={<ViewAssignment />} />
+          <Route path="/classrooms/:classroomId/assignments/:assignmentId/edit" element={<UpdateAssignment />} />
+
           <Route path="/calendar" element={<CalendarPage />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </Routes>

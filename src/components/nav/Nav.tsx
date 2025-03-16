@@ -22,15 +22,15 @@ export default function Nav() {
   };
 
   const navLinks = [
-    { href: "/dashboard", text: "Dashboard" },
-    { href: "/courses", text: "Courses" },
-    { href: "/tasks", text: "Tasks" },
-    { href: "/resources", text: "Resources" },
-    { href: "/calendar", text: "Calendar" }, 
+    // { href: "/dashboard", text: "Dashboard" },
+    // { href: "/courses", text: "Courses" },
+    // { href: "/tasks", text: "Tasks" },
+    // { href: "/resources", text: "Resources" },
   ];
 
   if (useremail) {
     navLinks.push({ href: "/myclass", text: "My Class" });
+    navLinks.push({ href: "/calendar", text: "Calendar" });
   }
 
   return (

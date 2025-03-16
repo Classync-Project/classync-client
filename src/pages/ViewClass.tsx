@@ -33,6 +33,19 @@ const ViewClass = () => {
   const role = location.state?.role;
   const { user } = useSelector((state: any) => state.user) || {};
 
+  useEffect(() => {
+    if (role) {
+      localStorage.setItem(`classroom-${classroomId}-role`, role);
+    }
+  }, [role, classroomId]);
+
+  // Clear the role from localStorage when the component unmounts (optional)
+  // useEffect(() => {
+  //   return () => {
+  //     localStorage.removeItem(`classroom-${classroomId}-role`);
+  //   };
+  // }, [classroomId]);
+
   // Fetch class info
   useEffect(() => {
     const fetchClassInfo = async () => {
@@ -110,7 +123,7 @@ const ViewClass = () => {
         user.id === String(userId) ? { ...user, role: newRole } : user
       )
     );
-  };  
+  };
 
   // Update assignments after new creation
   const updateAssignments = async () => {
@@ -219,7 +232,7 @@ const ViewClass = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="container mx-auto p-6  text-white"
-      > 
+      >
         {classInfo && (
           <div className="mb-8">
             <motion.div
@@ -240,13 +253,13 @@ const ViewClass = () => {
                 <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                   {role || "Role"}
                 </div>
-                <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                {/* <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                   {classInfo.subject || "Subject"}
-                </div>
+                </div> */}
               </div>
             </motion.div>
           </div>
-        )} 
+        )}
 
         <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto mt-20 ">
           <TabsList className=" p-1 rounded-xl shadow-md mb-8 flex w-full bg- py-3">
@@ -312,19 +325,6 @@ const ViewClass = () => {
                 user={user}
                 onAnnouncementCreated={updateAnnouncements}
               />
-            </TabsContent>
-
-            <TabsContent value="resources" className="focus:outline-none">
-              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-gray-100">
-                <BookOpen className="w-16 h-16 text-emerald-400 mb-4" />
-                <h3 className="text-xl font-medium text-gray-800 mb-2">
-                  Resources Coming Soon
-                </h3>
-                <p className="text-gray-600 text-center max-w-md">
-                  This feature is currently under development. Check back soon
-                  for class materials, readings, and more!
-                </p>
-              </div>
             </TabsContent>
 
             <TabsContent value="doubts" className="focus:outline-none">

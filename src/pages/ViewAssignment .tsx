@@ -10,17 +10,28 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Calendar, Clock, FileText, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, FileText, ArrowLeft, Edit } from "lucide-react";
+import UpdateAssignment from "./UpdateAssignment"; // Import the UpdateAssignment component
 
 const ViewAssignment: React.FC = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const { user } = useSelector((state: any) => state.user) || {};
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
-  const navigate = useNavigate(); // Initialize useNavigate
-
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // State to control modal visibility
+  const navigate = useNavigate();
+  const [isTeacherOrCreator, setIsTeacherOrCreator] = useState(false);
   const submittedById = user?.id;
-
+  const role = localStorage.getItem(`classroom-${classroomId}-role`);
+  
+  useEffect(() => {
+    if (role === "CREATOR" || role === "TEACHER") {
+      setIsTeacherOrCreator(true);
+    } else {
+      setIsTeacherOrCreator(false);
+    }
+  }, [role]);
+  
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
@@ -67,6 +78,18 @@ const ViewAssignment: React.FC = () => {
             <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               {assignment.title}
             </CardTitle>
+
+            {/* Edit Button (Visible to Creator/Teacher) */}
+            {
+              isTeacherOrCreator &&
+              <button
+                onClick={() => setIsUpdateModalOpen(true)} // Open the modal
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit Assignment</span>
+              </button>
+            }
           </div>
           <div className="flex items-center space-x-6 text-gray-600">
             <div className="flex items-center space-x-2">
@@ -93,9 +116,9 @@ const ViewAssignment: React.FC = () => {
             </p>
           </div>
 
-          {assignment.filePath && (
+          {assignment.questionFilePath && (
             <a
-              href={assignment.filePath}
+              href={assignment.questionFilePath}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200"
@@ -115,6 +138,21 @@ const ViewAssignment: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Update Assignment Modal */}
+      {isUpdateModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+            <UpdateAssignment
+              onClose={() => setIsUpdateModalOpen(false)} // Close the modal
+              onAssignmentUpdated={(updatedAssignment) => {
+                setAssignment(updatedAssignment); // Update the assignment in the state
+                setIsUpdateModalOpen(false); // Close the modal
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

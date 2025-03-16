@@ -61,7 +61,6 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [filterStatus, setFilterStatus] = useState<"all" | "upcoming" | "past">("all");
-  const [bookmarkedAssignments, setBookmarkedAssignments] = useState<number[]>([]);
   const navigate = useNavigate();
 
   const handleCreateAssignmentClose = () => {
@@ -69,39 +68,33 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
     onAssignmentCreated();
   };
 
-  const toggleBookmark = (assignmentId: number) => {
-    setBookmarkedAssignments(prev =>
-      prev.includes(assignmentId)
-        ? prev.filter(id => id !== assignmentId)
-        : [...prev, assignmentId]
-    );
-  };
-
   const filteredAssignments = assignments?.length > 0 &&
     assignments
-    .slice()
-    .reverse()  
-    .filter(assignment => {
-      // Apply search filter
-      if (searchQuery && !assignment.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
+      .slice()
+      .reverse()
+      .filter(assignment => {
+        // Apply search filter
+        if (searchQuery && !assignment.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+          return false;
+        }
 
-      // Apply status filter
-      if (filterStatus === "upcoming") {
-        return new Date(assignment.dueDate) > new Date();
-      } else if (filterStatus === "past") {
-        return new Date(assignment.dueDate) < new Date();
-      }
+        // Apply status filter
+        if (filterStatus === "upcoming") {
+          return new Date(assignment.dueDate) > new Date();
+        } else if (filterStatus === "past") {
+          return new Date(assignment.dueDate) < new Date();
+        }
 
-      return true;
-    })
-    .sort((a, b) => {
-      // Apply sorting
-      const dateA = new Date(a.dueDate).getTime();
-      const dateB = new Date(b.dueDate).getTime();
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    });
+        return true;
+      })
+      .sort((a, b) => {
+        // Apply sorting
+        const dateA = new Date(a.dueDate).getTime();
+        const dateB = new Date(b.dueDate).getTime();
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      });
+
+  // console.log(filteredAssignments);
 
   const getDueDateLabel = (dueDate: string) => {
     const date = new Date(dueDate);
@@ -136,7 +129,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
   return (
     <>
       <div className="mb-8 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-black">
           <div className="relative w-full md:w-1/3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -229,7 +222,6 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.isArray(filteredAssignments) && filteredAssignments.map((assignment, index) => {
               const dueStatus = getDueDateLabel(assignment.dueDate);
-              const isBookmarked = bookmarkedAssignments.includes(Number(assignment.id));
 
               return (
                 <motion.div
@@ -241,12 +233,12 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                   exit="exit"
                   layoutId={`assignment-${assignment.id}`}
                 >
-                  <Card className="h-full hover:shadow-md transition-shadow duration-200 cursor-pointer bg-white border-t-4 border-t-blue-500 flex flex-col" 
-                  onClick={() =>
-                    navigate(`/classrooms/${classroomId}/assignments/${assignment.id}`)
-                  }>
+                  <Card className="h-full hover:shadow-md transition-shadow duration-200 cursor-pointer bg-white border-t-4 border-t-blue-500 flex flex-col"
+                    onClick={() =>
+                      navigate(`/classrooms/${classroomId}/assignments/${assignment.id}`)
+                    }>
                     <CardHeader className="relative pb-2">
-                      
+
                       <Badge className={`mb-2 ${dueStatus.color}`}>
                         {dueStatus.text}
                       </Badge>
@@ -264,16 +256,6 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({
                         <Calendar className="h-4 w-4 mr-1" />
                         {new Date(assignment.dueDate).toLocaleDateString()}
                       </div>
-                      {/* <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                        onClick={() =>
-                          navigate(`/classrooms/${classroomId}/assignments/${assignment.id}`)
-                        }
-                      >
-                        View <ChevronRight className="ml-1 h-4 w-4" />
-                      </Button> */}
                     </CardFooter>
                   </Card>
                 </motion.div>

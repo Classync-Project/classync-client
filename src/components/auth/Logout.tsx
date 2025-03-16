@@ -21,6 +21,11 @@ export default function Logout() {
 
   const handleLogout = async () => {
     localStorage.removeItem("useremail");
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("classroom-") && key.endsWith("-role")) {
+        localStorage.removeItem(key);
+      }
+    });
     navigate("/");
     try {
       await axios.post(
