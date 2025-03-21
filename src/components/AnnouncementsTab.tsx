@@ -32,12 +32,20 @@ import {
   Bell,
   ChevronRight,
   Send,
+  Trash,
+  MoreVertical,
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CommentsService from "../components/CommentsService";
 import { Assignment } from "../types/Assignment";
 import { ScrollArea } from "../components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
 
 interface AnnouncementsTabProps {
   announcements: any[];
@@ -66,8 +74,6 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   const userEmail = localStorage.getItem("useremail");
 
   useEffect(() => {
-    // Fetch comments for all announcements initially
-    // console.log("Announcements : ", announcements);
     announcements.forEach((announcement) => {
       fetchComments(announcement.id);
     });
@@ -121,13 +127,11 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
         }
       );
 
-      // Clear the comment input after successful submission
       setCommentInputs((prev) => ({
         ...prev,
         [announceId]: "",
       }));
 
-      // Fetch updated comments
       fetchComments(announceId);
     } catch (error) {
       toast.error("Error adding comment");
@@ -135,10 +139,27 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
     }
   };
 
+  const handleDeleteComment = async (announcementId: string, commentId: string) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/comments/${commentId}`,
+        {
+          withCredentials: true,
+          params: { userEmail: user?.email },
+        }
+      );
+
+      fetchComments(announcementId);
+      toast.success("Comment deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete comment.");
+      console.error("Error deleting comment:", error);
+    }
+  };
+
   const fetchComments = async (announcementId: string) => {
     try {
       const result = await CommentsService.getCommentsByAnnouncement(announcementId);
-      // console.log("comments", result);
       setComments((prev) => ({
         ...prev,
         [announcementId]: result,
@@ -155,7 +176,6 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
     }));
   };
 
-  // Get initials for avatar fallback
   const getInitials = (email: string) => {
     if (!email) return "U";
     return email
@@ -166,7 +186,6 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
       .toUpperCase();
   };
 
-  // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
@@ -373,17 +392,42 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
                       {expandedComments[announcement.id] && comments[announcement.id]?.length > 0 && (
                         <div className="bg-gray-50 p-3 rounded-lg mb-3 space-y-3 max-h-60 overflow-y-auto">
                           {comments[announcement.id]?.map((comment, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
+                            <div key={idx} className="flex items-start gap-2 group">
                               <Avatar className="w-8 h-8">
                                 <AvatarImage src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author?.email || 'User')}&background=random`} />
                                 <AvatarFallback>{getInitials(comment.author?.email || 'User')}</AvatarFallback>
                               </Avatar>
-                              <div className="bg-white rounded-lg p-2 flex-1 shadow-sm">
+                              <div className="bg-white rounded-lg p-3 flex-1 shadow-sm relative">
                                 <div className="flex justify-between items-center mb-1">
                                   <p className="text-xs font-medium">{comment.author?.email || 'User'}</p>
                                   <span className="text-xs text-gray-400">{formatDate(comment.createdAt)}</span>
                                 </div>
-                                <p className="text-sm">{comment.content}</p>
+                                <p className="text-sm pr-6">{comment.content}</p>
+                                
+                                {comment.author?.email === user?.email && (
+                                  <div className="absolute top-3 right-3">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                          <MoreVertical className="h-4 w-4 text-gray-400" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end" className="w-36">
+                                        <DropdownMenuItem
+                                          className="text-red-500 focus:text-red-500 cursor-pointer flex items-center gap-2"
+                                          onClick={() => handleDeleteComment(announcement.id, comment.id)}
+                                        >
+                                          <Trash className="h-4 w-4" />
+                                          <span>Delete</span>
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           ))}

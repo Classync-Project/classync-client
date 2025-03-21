@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,17 +12,27 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const createdById = user?.id;
 
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
+  };
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     classroomId: classroomId || "",
     createdById: createdById || "",
-    dueDate: new Date().toISOString().slice(0, 16),
+    dueDate: getCurrentDateTime(),
   });
 
   const [file, setFile] = useState<File | null>(null);
   const [solutionFile, setSolutionFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [minDate, setMinDate] = useState(getCurrentDateTime());
+
+  useEffect(() => {
+    setMinDate(getCurrentDateTime());
+  }, []);
 
   const updateForm = (field: string, value: string) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -93,13 +103,21 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           rows={4}
           placeholder="Assignment Details"
         />
-        <input
-          type="datetime-local"
-          value={formData.dueDate}
-          onChange={(e) => updateForm("dueDate", e.target.value)}
-          className="w-full p-3 border-none rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
-          required
-        />
+
+        <div className="relative">
+          <label htmlFor="dueDate" className="block text-sm font-medium text-gray-300 mb-1">
+            Due Date
+          </label>
+          <input
+            type="datetime-local"
+            id="dueDate"
+            value={formData.dueDate}
+            min={minDate}
+            onChange={(e) => updateForm("dueDate", e.target.value)}
+            className="w-full p-3 border-none rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
 
         {/* Assignment File Upload */}
         <div

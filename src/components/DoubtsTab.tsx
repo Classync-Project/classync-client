@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { HelpCircle, MessageSquare, Filter, Clock, ChevronDown, ChevronUp } from "lucide-react";
+import { HelpCircle, MessageSquare, Filter, Clock, ChevronDown, ChevronUp, Trash } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 
 interface DoubtsTabProps {
   doubts: any[];
@@ -33,6 +43,8 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
   const [solutionsMap, setSolutionsMap] = useState<{ [key: string]: any[] }>({});
   const [loadingSolutions, setLoadingSolutions] = useState<{ [key: string]: boolean }>({});
   const [expandedDoubts, setExpandedDoubts] = useState<{ [key: string]: boolean }>({});
+  const [deletingSolution, setDeletingSolution] = useState<{ doubtId: string, solutionId: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Apply time filter
   React.useEffect(() => {
@@ -102,8 +114,7 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
       setReplyContent(prev => ({ ...prev, [doubtId]: "" }));
       setReplyingTo(null);
       toast.success("Your solution has been posted");
-      
-      // Immediately fetch updated solutions to show the new solution
+
       viewSolutions(doubtId);
       onDoubtCreated();
     } catch (error) {
@@ -112,24 +123,62 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
     }
   };
 
-  const viewSolutions = async (doubtId: string) => {
-    // Toggle the expanded state
+  const openDeleteDialog = (doubtId: string, solutionId: string) => {
+    setDeletingSolution({ doubtId, solutionId });
+  };
+
+  const cancelDelete = () => {
+    setDeletingSolution(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingSolution) return;
+
+    const { doubtId, solutionId } = deletingSolution;
+    setIsDeleting(true);
+
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/doubts/solutions/${solutionId}`,
+        {
+          withCredentials: true,
+          params: { userEmail: user?.email },
+        }
+      );
+
+      // Immediately remove the solution from the UI
+      setSolutionsMap(prev => ({
+        ...prev,
+        [doubtId]: prev[doubtId].filter(sol => sol.id !== solutionId)
+      }));
+
+      // Then refresh from server to ensure synchronization
+      await viewSolutions(doubtId, true);
+
+      toast.success("Solution deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete solution");
+      console.error("Error deleting solution:", error);
+    } finally {
+      setDeletingSolution(null);
+      setIsDeleting(false);
+    }
+  };
+
+  const viewSolutions = async (doubtId: string, forceRefresh = false) => {
     setExpandedDoubts(prev => ({
       ...prev,
       [doubtId]: !prev[doubtId]
     }));
 
-    // If we're closing the solutions view, return early
-    if (expandedDoubts[doubtId]) {
+    if (expandedDoubts[doubtId] && !forceRefresh) {
       return;
     }
 
-    // If we already loaded the solutions for this doubt, no need to fetch again
-    if (solutionsMap[doubtId]) {
+    if (solutionsMap[doubtId] && !forceRefresh) {
       return;
     }
 
-    // Set loading state for this specific doubt
     setLoadingSolutions(prev => ({ ...prev, [doubtId]: true }));
 
     try {
@@ -137,13 +186,12 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
         `http://localhost:8080/api/doubts/${doubtId}/solutions`,
         { withCredentials: true }
       );
-      
-      // Store solutions in the map with doubtId as key
+
       setSolutionsMap(prev => ({
         ...prev,
         [doubtId]: data
       }));
-      
+
     } catch (error) {
       console.error("Error fetching solutions:", error);
       toast.error("Error fetching solutions");
@@ -174,6 +222,28 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deletingSolution} onOpenChange={(open) => !open && cancelDelete()}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Solution</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this solution? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Post new doubt form */}
       <Card className="bg-white shadow-sm border border-gray-100">
         <CardContent className="pt-6">
@@ -285,7 +355,7 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
                                 {solutionsMap[doubt.id].length}
                               </Badge>
                             </div>
-                            
+
                             <div className="divide-y divide-gray-200">
                               {solutionsMap[doubt.id].map((solution) => (
                                 <div key={solution.id} className="py-3 first:pt-0 last:pb-0">
@@ -297,9 +367,21 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
                                     <div className="flex-1">
                                       <div className="flex justify-between items-start mb-1">
                                         <p className="font-medium text-sm">{solution.createdBy?.email || "Unknown"}</p>
-                                        <p className="text-xs text-gray-500">
-                                          {formatDate(solution.createdAt)}
-                                        </p>
+                                        <div className="flex items-center">
+                                          <p className="text-xs text-gray-500 mr-2">
+                                            {formatDate(solution.createdAt)}
+                                          </p>
+                                          {solution.createdBy?.email === user?.email && (
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              className="h-6 px-2 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                              onClick={() => openDeleteDialog(doubt.id, solution.id)}
+                                            >
+                                              <Trash className="w-3.5 h-3.5" />
+                                            </Button>
+                                          )}
+                                        </div>
                                       </div>
                                       <p className="text-gray-800 text-sm">{solution.content}</p>
                                     </div>
@@ -366,9 +448,8 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
                             type="button"
                             variant={expandedDoubts[doubt.id] ? "default" : "outline"}
                             size="sm"
-                            className={`text-xs flex items-center gap-1 ${
-                              expandedDoubts[doubt.id] ? "bg-emerald-600 text-white hover:bg-emerald-700" : ""
-                            }`}
+                            className={`text-xs flex items-center gap-1 ${expandedDoubts[doubt.id] ? "bg-emerald-600 text-white hover:bg-emerald-700" : ""
+                              }`}
                             onClick={() => viewSolutions(doubt.id)}
                           >
                             {expandedDoubts[doubt.id] ? (
@@ -379,7 +460,7 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
                             ) : (
                               <>
                                 <ChevronDown className="w-3 h-3" />
-                                View Solutions 
+                                View Solutions
                                 {solutionsMap[doubt.id]?.length > 0 && (
                                   <Badge className="ml-1 text-[10px] py-0 h-4 min-w-4 flex items-center justify-center">
                                     {solutionsMap[doubt.id].length}

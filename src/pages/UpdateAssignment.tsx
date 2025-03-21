@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Calendar, Clock, FileText, X } from "lucide-react";
+import { Calendar, Clock, FileText, X, Loader } from "lucide-react";
 
 interface UpdateAssignmentProps {
   onClose: () => void; // Function to close the modal
@@ -29,17 +29,20 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
   const [dragging, setDragging] = useState(false);
   const [previousQuestionFile, setPreviousQuestionFile] = useState<string | null>(null);
   const [previousSolutionFile, setPreviousSolutionFile] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch assignment details when the component mounts
   useEffect(() => {
     const fetchAssignment = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(
           `http://localhost:8080/api/classrooms/assignments/${assignmentId}`,
           { withCredentials: true }
         );
         const assignment = response.data;
-        console.log(assignment);
+        // console.log(assignment);
         setFormData({
           title: assignment.title,
           content: assignment.content,
@@ -50,6 +53,8 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
       } catch (error) {
         toast.error("Failed to fetch assignment details.");
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -60,8 +65,14 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const submissionData = new FormData();
     submissionData.append("title", formData.title);
@@ -89,8 +100,24 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
     } catch (err) {
       toast.error("Error updating assignment.");
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  // Loading state UI
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center space-y-4 py-16"
+      >
+        <Loader className="w-12 h-12 text-blue-500 animate-spin" />
+        <p className="text-lg text-gray-700 font-medium">Fetching assignment details...</p>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -104,6 +131,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
         <button
           onClick={onClose}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          disabled={isSubmitting}
         >
           <X className="w-6 h-6 text-gray-600" />
         </button>
@@ -118,6 +146,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
           className="w-full p-3 border-none rounded-lg bg-gray-100 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
           placeholder="Assignment Title"
           required
+          disabled={isSubmitting}
         />
 
         {/* Content */}
@@ -127,6 +156,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
           className="w-full p-3 border-none rounded-lg bg-gray-100 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
           rows={4}
           placeholder="Assignment Details"
+          disabled={isSubmitting}
         />
 
         {/* Due Date */}
@@ -135,9 +165,11 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
           <input
             type="datetime-local"
             value={formData.dueDate}
+            min={getCurrentDateTime()}
             onChange={(e) => updateForm("dueDate", e.target.value)}
             className="w-full p-3 border-none rounded-lg bg-gray-100 text-gray-800 focus:ring-2 focus:ring-blue-500"
             required
+            disabled={isSubmitting}
           />
         </div>
 
@@ -158,7 +190,8 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
 
         {/* Assignment File Upload */}
         <div
-          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-100"
+          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isSubmitting ? "opacity-50 pointer-events-none" :
+              dragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-100"
             }`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -182,6 +215,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
             className="hidden"
             id="fileUpload"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
+            disabled={isSubmitting}
           />
           <label htmlFor="fileUpload" className="cursor-pointer text-gray-600">
             {file ? (
@@ -209,7 +243,8 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
 
         {/* Solution File Upload */}
         <div
-          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-green-500 bg-green-50" : "border-gray-300 bg-gray-100"
+          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isSubmitting ? "opacity-50 pointer-events-none" :
+              dragging ? "border-green-500 bg-green-50" : "border-gray-300 bg-gray-100"
             }`}
         >
           <input
@@ -218,6 +253,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
             className="hidden"
             id="solutionUpload"
             onChange={(e) => setSolutionFile(e.target.files?.[0] || null)}
+            disabled={isSubmitting}
           />
           <label htmlFor="solutionUpload" className="cursor-pointer text-gray-600">
             {solutionFile ? (
@@ -231,9 +267,18 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-transform transform origin-center"
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg transition-all transform origin-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+            }`}
+          disabled={isSubmitting}
         >
-          Update Assignment
+          {isSubmitting ? (
+            <div className="flex items-center justify-center space-x-2">
+              <Loader className="w-5 h-5 animate-spin" />
+              <span>Updating Assignment...</span>
+            </div>
+          ) : (
+            "Update Assignment"
+          )}
         </button>
       </form>
     </motion.div>

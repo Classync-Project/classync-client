@@ -196,8 +196,8 @@ export default function Nav() {
                     toast.success(
                       `Classroom "${data.className}" created successfully!`
                     );
-                    // console.log(data);
-                    navigate(`/classrooms/${data.id}`);
+                    console.log(data);
+                    navigate(`/classrooms/${data.classroomId}`);
                     // navigate(`/myclass`);
                   } else {
                     throw new Error("Failed to create classroom.");
