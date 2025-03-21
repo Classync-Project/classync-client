@@ -23,12 +23,12 @@ const App: React.FC = () => {
       const { data } = await axios.get("http://localhost:8080/api/user", {
         withCredentials: true,
         headers: {
-          Accept: 'application/json',
-        }
+          Accept: "application/json",
+        },
       });
       if (data) {
         // console.log(data);
-        localStorage.setItem('useremail', data.email);
+        localStorage.setItem("useremail", data.email);
 
         dispatch({ type: "SET_USER", payload: data });
       }
@@ -73,8 +73,19 @@ const App: React.FC = () => {
           <Route path="/resources" element={<Resources />} />
           <Route path="/myclass" element={<MyClasses />} />
           <Route path="/classrooms/:classroomId" element={<ViewClass />} />
-          <Route path="/classrooms/:classroomId/assignments/:assignmentId" element={<ViewAssignment />} />
-          <Route path="/classrooms/:classroomId/assignments/:assignmentId/edit" element={<UpdateAssignment />} />
+          <Route
+            path="/classrooms/:classroomId/assignments/:assignmentId"
+            element={<ViewAssignment />}
+          />
+          <Route
+            path="/classrooms/:classroomId/assignments/:assignmentId/edit"
+            element={
+              <UpdateAssignment
+                onClose={() => {}}
+                onAssignmentUpdated={() => {}}
+              />
+            }
+          />
 
           <Route path="/calendar" element={<CalendarPage />} />
           {/* <Route path="/profile" element={<Profile />} /> */}

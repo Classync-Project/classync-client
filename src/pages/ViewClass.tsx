@@ -109,6 +109,7 @@ const ViewClass = () => {
           { withCredentials: true }
         );
         setAnnouncements(data);
+        console.log("fetched announcements : ", data);
       } catch (error) {
         console.error(error);
       }
@@ -245,9 +246,7 @@ const ViewClass = () => {
                 <h1 className="text-3xl font-bold text-gray-200 mb-1">
                   {classInfo.className || "Class Name"}
                 </h1>
-                <p className="text-gray-600">
-                  {classInfo.description || ""}
-                </p>
+                <p className="text-gray-600">{classInfo.description || ""}</p>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
@@ -261,7 +260,10 @@ const ViewClass = () => {
           </div>
         )}
 
-        <Tabs defaultValue="assignments" className="w-full max-w-7xl mx-auto mt-20 ">
+        <Tabs
+          defaultValue="assignments"
+          className="w-full max-w-7xl mx-auto mt-20 "
+        >
           <TabsList className=" p-1 rounded-xl shadow-md mb-8 flex w-full bg- py-3">
             <TabsTrigger
               value="assignments"
@@ -336,7 +338,6 @@ const ViewClass = () => {
                 onDoubtCreated={updateDoubts}
               />
             </TabsContent>
-
           </motion.div>
         </Tabs>
       </motion.div>

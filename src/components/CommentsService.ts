@@ -5,7 +5,7 @@ const API_URL = "http://localhost:8080/api/comments";
 
 const CommentsService = {
   // Fetch comments by announcement ID
-  getCommentsByAnnouncement: async (announcementId) => {
+  getCommentsByAnnouncement: async (announcementId : any) => {
     try {
       // console.log("in fetching comments");
       const response = await axios.get(
