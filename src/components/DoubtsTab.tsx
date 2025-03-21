@@ -46,7 +46,6 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
   const [deletingSolution, setDeletingSolution] = useState<{ doubtId: string, solutionId: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Apply time filter
   React.useEffect(() => {
     let filtered = [...doubts];
     const now = new Date();
@@ -146,13 +145,11 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
         }
       );
 
-      // Immediately remove the solution from the UI
       setSolutionsMap(prev => ({
         ...prev,
         [doubtId]: prev[doubtId].filter(sol => sol.id !== solutionId)
       }));
 
-      // Then refresh from server to ensure synchronization
       await viewSolutions(doubtId, true);
 
       toast.success("Solution deleted successfully");
