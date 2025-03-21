@@ -37,6 +37,7 @@ export default function Logout() {
       dispatch({ type: "CLEAR_USER" });
       console.log("Logged out");
     } catch (error) {
+      window.location.reload();
       console.error(error);
     }
   };
@@ -76,9 +77,9 @@ export default function Logout() {
         {/* Dropdown Menu Content */}
         <DropdownMenuContent className="w-48 bg-white shadow-lg rounded-md">
           <DropdownMenuItem>{user.fullName}</DropdownMenuItem>
-          <DropdownMenuItem>{user.email}</DropdownMenuItem>
+          {/* <DropdownMenuItem>{user.email}</DropdownMenuItem> */}
 
-          <DropdownMenuItem onClick={handleProfile} className="text-blue-700">Edit Profile</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={handleProfile} className="text-blue-700">Edit Profile</DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout} className="text-red-500 font-bold">
             Logout

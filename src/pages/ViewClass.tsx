@@ -12,7 +12,7 @@ import { Participants } from "../types/Participants";
 import { Assignment } from "../types/Assignment";
 import ParticipantsTab from "../components/ParticipantsTab";
 import AssignmentsTab from "../components/AssignmentsTab";
-import AnnouncementsTab from "../components/AnnouncementsTab";
+import AnnouncementsTab from "../components/announcements/AnnouncementsTab";
 import { motion } from "framer-motion";
 import { Toaster } from "../components/ui/sonner";
 import { ScrollArea } from "../components/ui/scroll-area";
@@ -39,13 +39,6 @@ const ViewClass = () => {
     }
   }, [role, classroomId]);
 
-  // Clear the role from localStorage when the component unmounts (optional)
-  // useEffect(() => {
-  //   return () => {
-  //     localStorage.removeItem(`classroom-${classroomId}-role`);
-  //   };
-  // }, [classroomId]);
-
   // Fetch class info
   useEffect(() => {
     const fetchClassInfo = async () => {
@@ -54,7 +47,7 @@ const ViewClass = () => {
           `http://localhost:8080/api/classrooms/${classroomId}`,
           { withCredentials: true }
         );
-        console.log(data);
+        // console.log(data);
         setClassInfo(data);
       } catch (err) {
         console.error("Error fetching class info:", err);
@@ -109,7 +102,7 @@ const ViewClass = () => {
           { withCredentials: true }
         );
         setAnnouncements(data);
-        console.log("fetched announcements : ", data);
+        // console.log("fetched announcements : ", data);
       } catch (error) {
         console.error(error);
       }

@@ -114,7 +114,12 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
       setReplyingTo(null);
       toast.success("Your solution has been posted");
 
-      viewSolutions(doubtId);
+      setExpandedDoubts(prev => ({
+        ...prev,
+        [doubtId]: true
+      }));
+
+      await viewSolutions(doubtId, true);
       onDoubtCreated();
     } catch (error) {
       console.error("Error submitting solution:", error);

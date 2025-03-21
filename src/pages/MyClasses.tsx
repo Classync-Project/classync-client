@@ -182,12 +182,12 @@ const MyClasses: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black py-10 px-4 sm:px-6 text-white">
       <div className="container mx-auto max-w-7xl">
-        <div className="relative mb-16 text-center">
+        {/* <div className="relative mb-16 text-center">
           <h1 className="text-6xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text pb-2">
             ✨ My Learning Journey ✨
           </h1>
           <div className="h-1 w-40 bg-gradient-to-r from-pink-500 to-purple-500 mx-auto mt-4 rounded-full"></div>
-        </div>
+        </div> */}
 
         {userClassrooms.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-4 max-w-2xl mx-auto">
