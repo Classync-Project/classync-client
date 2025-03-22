@@ -28,7 +28,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
 
-  const filteredAnnouncements = announcements.filter((announcement) => {
+  const filteredAnnouncements = announcements.length == 0 ? [] : announcements.filter((announcement) => {
     if (activeTab === "recent") {
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -90,14 +90,14 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
 
         <div className="lg:col-span-3 space-y-6">
           {filteredAnnouncements.length === 0 ? (
-            <EmptyAnnouncementsState 
-              role={role} 
-              onCreateClick={() => setShowAnnouncementModal(true)} 
+            <EmptyAnnouncementsState
+              role={role}
+              onCreateClick={() => setShowAnnouncementModal(true)}
             />
           ) : (
-            <AnnouncementList 
-              announcements={filteredAnnouncements} 
-              user={user} 
+            <AnnouncementList
+              announcements={filteredAnnouncements}
+              user={user}
             />
           )}
         </div>

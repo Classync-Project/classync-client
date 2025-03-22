@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Assignment } from "@/types/Assignment";
-import SubmitAssignment from "./SubmitAssignment";
+// import SubmitAssignment from "./SubmitAssignment";
+import SubmitAssignment from "../components/SubmitAssignment/SubmitAssignment";
 import {
   Card,
   CardContent,
@@ -11,19 +12,20 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Calendar, Clock, FileText, ArrowLeft, Edit } from "lucide-react";
-import UpdateAssignment from "./UpdateAssignment"; // Import the UpdateAssignment component
+import UpdateAssignment from "./UpdateAssignment";
 
 const ViewAssignment: React.FC = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const { user } = useSelector((state: any) => state.user) || {};
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // State to control modal visibility
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
   const [isTeacherOrCreator, setIsTeacherOrCreator] = useState(false);
   const submittedById = user?.id;
   const role = localStorage.getItem(`classroom-${classroomId}-role`);
-  
+
   useEffect(() => {
     if (role === "CREATOR" || role === "TEACHER") {
       setIsTeacherOrCreator(true);
@@ -31,7 +33,7 @@ const ViewAssignment: React.FC = () => {
       setIsTeacherOrCreator(false);
     }
   }, [role]);
-  
+
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
@@ -47,6 +49,26 @@ const ViewAssignment: React.FC = () => {
 
     fetchAssignment();
   }, [assignmentId]);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/classrooms/assignments/submissions?assignmentId=${assignmentId}&submittedById=${submittedById}`,
+          { withCredentials: true }
+        );
+        if (response.data.length > 0) {
+          setHasSubmitted(true); // Student has submitted at least once
+        }
+      } catch (error) {
+        console.error("Failed to fetch submissions", error);
+      }
+    };
+
+    if (!isTeacherOrCreator) {
+      fetchSubmissions();
+    }
+  }, [assignmentId, submittedById, isTeacherOrCreator]);
 
   if (!assignment)
     return (
@@ -80,16 +102,15 @@ const ViewAssignment: React.FC = () => {
             </CardTitle>
 
             {/* Edit Button (Visible to Creator/Teacher) */}
-            {
-              isTeacherOrCreator &&
+            {isTeacherOrCreator && (
               <button
-                onClick={() => setIsUpdateModalOpen(true)} // Open the modal
+                onClick={() => setIsUpdateModalOpen(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200"
               >
                 <Edit className="w-4 h-4" />
                 <span>Edit Assignment</span>
               </button>
-            }
+            )}
           </div>
           <div className="flex items-center space-x-6 text-gray-600">
             <div className="flex items-center space-x-2">
@@ -128,14 +149,18 @@ const ViewAssignment: React.FC = () => {
             </a>
           )}
 
-          <div className="mt-8">
-            <SubmitAssignment
-              classroomId={classroomId || ""}
-              assignmentId={assignmentId || ""}
-              submittedById={submittedById || ""}
-              dueDate={assignment.dueDate}
-            />
-          </div>
+          {/* Show SubmitAssignment for students who haven't submitted or need to update */}
+          {!isTeacherOrCreator && (
+            <div className="mt-8">
+              <SubmitAssignment
+                classroomId={classroomId || ""}
+                assignmentId={assignmentId || ""}
+                submittedById={submittedById || ""}
+                dueDate={assignment.dueDate}
+                hasSubmitted={hasSubmitted}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -144,10 +169,10 @@ const ViewAssignment: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
             <UpdateAssignment
-              onClose={() => setIsUpdateModalOpen(false)} // Close the modal
+              onClose={() => setIsUpdateModalOpen(false)}
               onAssignmentUpdated={(updatedAssignment) => {
-                setAssignment(updatedAssignment); // Update the assignment in the state
-                setIsUpdateModalOpen(false); // Close the modal
+                setAssignment(updatedAssignment);
+                setIsUpdateModalOpen(false);
               }}
             />
           </div>
