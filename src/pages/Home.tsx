@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronRight, BookOpen, Clock, Users, FolderGit2 } from "lucide-react";
+import { ChevronRight, Calendar, BookOpen, CheckSquare, HelpCircle, Layers } from "lucide-react";
 import FeatureCard from "../components/FeatureCard";
 import { FeatureCardProps } from "../types/FeatureCardProps";
 import Footer from "../components/Footer";
@@ -7,28 +7,34 @@ import Footer from "../components/Footer";
 const Home: React.FC = () => {
   const features: Array<FeatureCardProps> = [
     {
-      icon: <BookOpen className="w-8 h-8 text-purple-500" />,
-      title: "Smart Learning Paths",
+      icon: <Layers className="w-8 h-8 text-purple-500" />,
+      title: "Classroom Management",
       description:
-        "Personalized course management with AI-driven recommendations and progress tracking.",
+        "Easily organize and manage virtual classrooms with intuitive controls and student tracking.",
     },
     {
-      icon: <Clock className="w-8 h-8 text-blue-500" />,
-      title: "Efficient Task Management",
+      icon: <CheckSquare className="w-8 h-8 text-blue-500" />,
+      title: "Assignment Evolution",
       description:
-        "Streamlined assignment creation and grading with automated workflows.",
+        "Automated grading system that evaluates assignments instantly",
     },
     {
-      icon: <Users className="w-8 h-8 text-green-500" />,
-      title: "Collaborative Tools",
+      icon: <BookOpen className="w-8 h-8 text-green-500" />,
+      title: "Assignment Management",
       description:
-        "Real-time collaboration features with integrated discussion boards and group projects.",
+        "Create, distribute, and track assignments with customizable templates and deadlines.",
     },
     {
-      icon: <FolderGit2 className="w-8 h-8 text-orange-500" />,
-      title: "Resource Hub",
+      icon: <HelpCircle className="w-8 h-8 text-orange-500" />,
+      title: "Doubt Management",
       description:
-        "Centralized resource management with smart organization and quick access.",
+        "Interactive platform for students to raise questions and receive timely responses.",
+    },
+    {
+      icon: <Calendar className="w-8 h-8 text-pink-500" />,
+      title: "Calendar Functionality",
+      description:
+        "Integrated scheduling system to track classes, assignments, and important deadlines.",
     },
   ];
 
@@ -42,8 +48,7 @@ const Home: React.FC = () => {
               Welcome to Classync
             </h1>
             <p className="text-gray-400 text-xl mb-12 animate-fade-in-up">
-              Elevate your learning experience with our next-gen educational
-              platform.
+              Elevate your teaching experience with our comprehensive classroom management platform.
             </p>
             <button
               className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-10 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center mx-auto group animate-fade-in-up"
@@ -56,8 +61,8 @@ const Home: React.FC = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 pb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <FeatureCard
                 key={index}
@@ -70,7 +75,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 };

@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-// import { Assignment } from "../types/Assignment";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import AnnouncementForm from "./AnnouncementForm";
 import AnnouncementList from "./AnnouncementList";
 import UpcomingAssignments from "./UpcomingAssignments";
 import EmptyAnnouncementsState from "./EmptyAnnouncementsState";
 import { Dialog, DialogTrigger } from "../ui/dialog";
-import { AnnouncementsTabProps } from "@/types/AnnouncementsTabProps";
 
+interface AnnouncementsTabProps {
+  announcements: any[];
+  assignments: Assignment[];
+  classroomId: string | undefined;
+  role: string | undefined;
+  user: any;
+  onAnnouncementCreated: () => void;
+}
 
 const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   announcements,
