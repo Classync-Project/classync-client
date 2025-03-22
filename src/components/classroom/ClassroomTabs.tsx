@@ -18,8 +18,8 @@ const ClassroomTabs: React.FC<ClassroomTabsProps> = ({
   defaultTab = "assignments" 
 }) => {
   return (
-    <Tabs defaultValue={defaultTab} className="w-full max-w-7xl mx-auto mt-20">
-      <TabsList className="p-1 rounded-xl shadow-md mb-8 flex w-full py-3">
+    <Tabs defaultValue={defaultTab} className="w-full  max-w-7xl mx-auto mt-20">
+      <TabsList className=" rounded-xl shadow-md mb-8 flex  py-3 space-x-2 bg-transparent">
         <TabsTrigger
           value="assignments"
           className="flex-1 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 flex items-center justify-center space-x-2 py-3"
@@ -47,6 +47,15 @@ const ClassroomTabs: React.FC<ClassroomTabsProps> = ({
         >
           <HelpCircle className="w-5 h-5" />
           <span>Doubts</span>
+        </TabsTrigger>
+
+        <TabsTrigger
+          value="ai-assistant"
+          className="flex-1 data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-700 flex items-center justify-center space-x-2 py-3"
+        >
+          
+
+          <span>AI Assistant</span>
         </TabsTrigger>
       </TabsList>
 

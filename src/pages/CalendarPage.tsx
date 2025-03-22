@@ -142,7 +142,7 @@ const CalendarPage: React.FC = () => {
     };
 
     return (
-        <div className="w-full font-sans bg-white rounded-lg shadow-lg p-5">
+        <div className="w-full font-sans bg-white rounded-lg shadow-lg p-5 max-w-7xl mx-auto mt-10">
             <style>
                 {`
                     .fc .fc-col-header-cell-cushion {
