@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Assignment } from "@/types/Assignment";
-// import SubmitAssignment from "./SubmitAssignment";
-import SubmitAssignment from "../components/SubmitAssignment/SubmitAssignment";
+import SubmitAssignment from "../components/Assignment/SubmitAssignment";
 import {
   Card,
   CardContent,
@@ -13,6 +12,7 @@ import {
 } from "../components/ui/card";
 import { Calendar, Clock, FileText, ArrowLeft, Edit } from "lucide-react";
 import UpdateAssignment from "./UpdateAssignment";
+import ViewAllSubmissions from "../components/Assignment/ViewAllSubmission";
 
 const ViewAssignment: React.FC = () => {
   const { classroomId } = useParams<{ classroomId: string }>();
@@ -84,7 +84,7 @@ const ViewAssignment: React.FC = () => {
     );
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
@@ -160,6 +160,11 @@ const ViewAssignment: React.FC = () => {
                 hasSubmitted={hasSubmitted}
               />
             </div>
+          )}
+
+          {/* Show All Submissions for teachers/creators */}
+          {isTeacherOrCreator && (
+            <ViewAllSubmissions assignmentId={assignmentId || ""} />
           )}
         </CardContent>
       </Card>
