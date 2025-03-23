@@ -1,10 +1,10 @@
 import React from "react";
-import { Participants } from "../types/Participants";
-import { Card, CardContent } from "../components/ui/card";
-import { Avatar, AvatarFallback } from "../components/ui/avatar";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { Participants } from "../../types/Participants";
+import { Card, CardContent } from "../ui/card";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Mail, UserCog, User, GraduationCap, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -48,7 +48,7 @@ const ParticipantCard: React.FC<ParticipantCardProps> = ({
       "bg-indigo-100 text-indigo-800",
       "bg-emerald-100 text-emerald-800",
     ];
-    return colors[participant.id % colors.length];
+    return colors[Number(participant.id) % colors.length];
   };
 
   return (
@@ -87,7 +87,7 @@ const ParticipantCard: React.FC<ParticipantCardProps> = ({
                   <div className="flex items-center space-x-2 mt-1">
                     <Select
                       defaultValue={participant.role}
-                      onValueChange={(value) => onRoleChange(participant.id, value)}
+                      onValueChange={(value) => onRoleChange(Number(participant.id), value)}
                     >
                       <SelectTrigger className="h-8 text-xs w-32">
                         <SelectValue />
@@ -142,7 +142,7 @@ const ParticipantCard: React.FC<ParticipantCardProps> = ({
                         variant="ghost"
                         size="sm"
                         className="ml-2 h-7 w-7 p-0 rounded-full"
-                        onClick={() => setEditing(participant.id)}
+                        onClick={() => setEditing(Number(participant.id))}
                       >
                         <Pencil className="h-3.5 w-3.5 text-gray-500" />
                       </Button>

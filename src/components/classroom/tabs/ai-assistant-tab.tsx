@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import axios from "axios";

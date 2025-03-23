@@ -7,6 +7,7 @@ import AnnouncementList from "./AnnouncementList";
 import UpcomingAssignments from "./UpcomingAssignments";
 import EmptyAnnouncementsState from "./EmptyAnnouncementsState";
 import { Dialog, DialogTrigger } from "../ui/dialog";
+import { Assignment } from "@/types/Assignment";
 
 interface AnnouncementsTabProps {
   announcements: any[];

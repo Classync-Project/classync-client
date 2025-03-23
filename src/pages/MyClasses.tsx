@@ -180,7 +180,7 @@ const MyClasses: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black py-10 px-4 sm:px-6 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 py-10 px-4 sm:px-6 text-white">
       <div className="container mx-auto max-w-7xl">
         {/* <div className="relative mb-16 text-center">
           <h1 className="text-6xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text pb-2">

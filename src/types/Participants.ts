@@ -3,4 +3,6 @@ export interface Participants {
   fullName: string; // Full name of the user
   email: string; // Email address of the user
   role: string; // Role of the user (e.g., "TEACHER", "STUDENT")
+  name : string;
+  userId: number; // User ID
 }

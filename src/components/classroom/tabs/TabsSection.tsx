@@ -1,9 +1,9 @@
 import React from "react";
-import { Participants } from "../types/Participants";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
-import { Separator } from "../components/ui/separator";
+import { Participants } from "../../../types/Participants";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../ui/tabs";
+import { Separator } from "../../ui/separator";
 import { motion } from "framer-motion";
-import ParticipantCard from "./ParticipantCard";
+import ParticipantCard from "../ParticipantCard";
 import { GraduationCap, User, UserCog } from "lucide-react";
 
 interface TabsSectionProps {
@@ -72,7 +72,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={creator}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === creator.id}
+                  isEditing={editingUser === Number(creator.id)}
                   setEditing={setEditingUser}
                 />
               ))}
@@ -97,7 +97,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={teacher}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === teacher.id}
+                  isEditing={editingUser === Number(teacher.id)}
                   setEditing={setEditingUser}
                 />
               ))}
@@ -122,7 +122,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={student}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === student.id}
+                  isEditing={editingUser === Number(student.id)}
                   setEditing={setEditingUser}
                 />
               ))}
@@ -152,7 +152,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={teacher}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === teacher.id}
+                  isEditing={editingUser === Number(teacher.id)}
                   setEditing={setEditingUser}
                 />
               ))}
@@ -182,7 +182,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={student}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === student.id}
+                  isEditing={editingUser === Number(student.id)}
                   setEditing={setEditingUser}
                 />
               ))}
@@ -212,7 +212,7 @@ const TabsSection: React.FC<TabsSectionProps> = ({
                   participant={creator}
                   currentRole={Role}
                   onRoleChange={onRoleChange}
-                  isEditing={editingUser === creator.id}
+                  isEditing={editingUser === Number(creator.id)}
                   setEditing={setEditingUser}
                 />
               ))}

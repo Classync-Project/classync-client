@@ -21,10 +21,10 @@ import ClassHeader from "../components/classroom/ClassHeader";
 import ClassroomTabs from "../components/classroom/ClassroomTabs";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ErrorDisplay from "../components/common/ErrorDisplay";
-import ParticipantsTab from "../components/ParticipantsTab";
-import AssignmentsTab from "../components/AssignmentsTab";
+import ParticipantsTab from "../components/classroom/tabs/ParticipantsTab";
+import AssignmentsTab from "../components/classroom/tabs/AssignmentsTab";
 import AnnouncementsTab from "../components/announcements/AnnouncementsTab";
-import DoubtsTab from "../components/DoubtsTab";
+import DoubtsTab from "../components/classroom/tabs/DoubtsTab";
 import AIAssistantTab from "../components/classroom/tabs/ai-assistant-tab";
 
 interface LocationState {
@@ -47,20 +47,17 @@ const ViewClass: React.FC = () => {
   } = useParticipants(classroomId);
   const { 
     assignments, 
-    loading: assignmentsLoading, 
-    error: assignmentsError,
+   
     refreshAssignments 
   } = useAssignments(classroomId);
   const { 
     announcements, 
-    loading: announcementsLoading, 
-    error: announcementsError,
+   
     refreshAnnouncements 
   } = useAnnouncements(classroomId);
   const { 
     doubts, 
-    loading: doubtsLoading, 
-    error: doubtsError,
+   
     refreshDoubts 
   } = useDoubts(classroomId);
 

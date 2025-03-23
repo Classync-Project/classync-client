@@ -6,7 +6,7 @@ import Resources from "./pages/Resources";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Nav from "./components/nav/Nav";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +15,8 @@ import ViewClass from "./pages/ViewClass";
 import ViewAssignment from "./pages/ViewAssignment ";
 import CalendarPage from "./pages/CalendarPage";
 import UpdateAssignment from "./pages/UpdateAssignment";
+import UserGuide from "./pages/user-guide/user-guide-page";
+import Footer from "./components/Footer";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -41,12 +43,10 @@ const App: React.FC = () => {
     loadUser();
   }, []);
 
-  const { user } = useSelector((state: any) => state.user) || {};
-  // localStorage.setItem('useremail', user.email);
-  // console.log(user);
+ 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 font-poppins">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-900 font-poppins">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -67,11 +67,12 @@ const App: React.FC = () => {
         {/* Define Routes */}
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/user-guide" element={<UserGuide />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/resources" element={<Resources />} />
-          <Route path="/myclass" element={<MyClasses />} />
+          <Route path="/myclasses" element={<MyClasses />} />
           <Route path="/classrooms/:classroomId" element={<ViewClass />} />
           <Route
             path="/classrooms/:classroomId/assignments/:assignmentId"
@@ -90,6 +91,8 @@ const App: React.FC = () => {
           <Route path="/calendar" element={<CalendarPage />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </Routes>
+
+        <Footer />
       </Router>
     </div>
   );
