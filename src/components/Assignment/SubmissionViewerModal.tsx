@@ -7,12 +7,12 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { ExternalLink } from "lucide-react";
-import { SubmissionDTO } from "./types";
+import { Solution } from "@/types/Solution";
 
 interface SubmissionViewerModalProps {
     isOpen: boolean;
     onClose: () => void;
-    submission: SubmissionDTO | null;
+    submission: Solution | null;
 }
 
 const SubmissionViewerModal: React.FC<SubmissionViewerModalProps> = ({
