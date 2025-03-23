@@ -36,7 +36,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
       return new Date(announcement.createdAt) >= oneWeekAgo;
     }
     return true;
-  });
+  }).reverse();
 
   const isStudent = role === "STUDENT";
 

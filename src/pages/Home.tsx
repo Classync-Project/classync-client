@@ -1,8 +1,8 @@
 import React from "react";
-import { ChevronRight, Calendar, BookOpen, CheckSquare, HelpCircle, Layers, Bot, ArrowRight } from "lucide-react";
-import FeatureCard from "../components/FeatureCard";
+import { ChevronRight, Calendar, BookOpen, CheckSquare, HelpCircle, Layers, Bot } from "lucide-react";
+import FeatureCard from "../components/common/FeatureCard";
 import { FeatureCardProps } from "../types/FeatureCardProps";
-import Footer from "../components/Footer";
+
 import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-gradient-to-b from-gray-950 to-gray-900 min-h-screen text-white">
+    <div className="w-full bg-gradient-to-b from-gray-950 to-gray-900  text-white mb-10">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-4">
         <div className="text-center relative">
@@ -55,7 +55,7 @@ const Home: React.FC = () => {
           <div className="absolute top-0 left-1/2 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute top-0 right-1/4 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
           <div className="absolute -bottom-8 left-1/4 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-          
+
           {/* Content */}
           <div className="relative z-10">
             <h1 className="text-7xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 text-transparent bg-clip-text mb-8">
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
             <div className="flex gap-4 justify-center">
               <button
                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center group"
-                onClick={() => 
+                onClick={() =>
                   navigate("/")
                 }
               >
@@ -77,7 +77,7 @@ const Home: React.FC = () => {
               <button
                 className="bg-gray-800 border border-gray-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-700 transition-all"
                 onClick={() =>
-                  
+
                   navigate("/user-guide")
                 }
               >
@@ -91,7 +91,7 @@ const Home: React.FC = () => {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 mt-4 mb-10">
         <div className="text-center mb-6">
-         
+
           <p className="text-gray-400 max-w-3xl mx-auto">
             Everything you need to create an engaging and effective virtual learning environment
           </p>
@@ -108,10 +108,10 @@ const Home: React.FC = () => {
           ))}
         </div>
       </div>
-      
-      
 
-     
+
+
+
     </div>
   );
 };

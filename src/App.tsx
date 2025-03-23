@@ -12,7 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyClasses from "./pages/MyClasses";
 import ViewClass from "./pages/ViewClass";
-import ViewAssignment from "./pages/ViewAssignment ";
+import ViewAssignment from "./pages/ViewAssignment";
 import CalendarPage from "./pages/CalendarPage";
 import UpdateAssignment from "./pages/UpdateAssignment";
 import UserGuide from "./pages/user-guide/user-guide-page";
@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
+
   const loadUser = async () => {
     try {
       const { data } = await axios.get("http://localhost:8080/api/user", {
@@ -28,10 +29,9 @@ const App: React.FC = () => {
           Accept: "application/json",
         },
       });
-      if (data) {
-        // console.log(data);
-        localStorage.setItem("useremail", data.email);
 
+      if (data) {
+        localStorage.setItem("useremail", data.email);
         dispatch({ type: "SET_USER", payload: data });
       }
     } catch (error) {
@@ -43,10 +43,8 @@ const App: React.FC = () => {
     loadUser();
   }, []);
 
- 
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-900 font-poppins">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-900 font-poppins">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -60,37 +58,32 @@ const App: React.FC = () => {
         theme="colored"
       />
       <Router>
-        {/* Navbar for navigation */}
-        {/* <Navbar /> */}
         <Nav />
 
-        {/* Define Routes */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/user-guide" element={<UserGuide />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/myclasses" element={<MyClasses />} />
-          <Route path="/classrooms/:classroomId" element={<ViewClass />} />
-          <Route
-            path="/classrooms/:classroomId/assignments/:assignmentId"
-            element={<ViewAssignment />}
-          />
-          <Route
-            path="/classrooms/:classroomId/assignments/:assignmentId/edit"
-            element={
-              <UpdateAssignment
-                onClose={() => {}}
-                onAssignmentUpdated={() => {}}
-              />
-            }
-          />
-
-          <Route path="/calendar" element={<CalendarPage />} />
-          {/* <Route path="/profile" element={<Profile />} /> */}
-        </Routes>
+        {/* Content Section - Uses flex-grow to push the footer down */}
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/user-guide" element={<UserGuide />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/myclasses" element={<MyClasses />} />
+            <Route path="/classrooms/:classroomId" element={<ViewClass />} />
+            <Route
+              path="/classrooms/:classroomId/assignments/:assignmentId"
+              element={<ViewAssignment />}
+            />
+            <Route
+              path="/classrooms/:classroomId/assignments/:assignmentId/edit"
+              element={
+                <UpdateAssignment onClose={() => { }} onAssignmentUpdated={() => { }} />
+              }
+            />
+            <Route path="/calendar" element={<CalendarPage />} />
+          </Routes>
+        </div>
 
         <Footer />
       </Router>

@@ -1,6 +1,6 @@
 import { ModalProps } from "@/types/ModalProps";
 
-const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
+const Modal = ({ isOpen, children, title }: ModalProps) => {
     if (!isOpen) return null;
 
     return (

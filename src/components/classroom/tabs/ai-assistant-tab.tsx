@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Send, Bot, User, Loader2, Sparkles } from "lucide-react";
+import { Send, Bot, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import axios from "axios";
@@ -24,7 +24,7 @@ interface ChatMessage {
 }
 
 // Key for storing chat in localStorage
-const getChatStorageKey = (classroomId: string, userId: string) => 
+const getChatStorageKey = (classroomId: string, userId: string) =>
   `classroom_chat_${classroomId}_${userId}`;
 
 // Assistant name and details
@@ -47,7 +47,7 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
     if (classroomId && userId) {
       const storageKey = getChatStorageKey(classroomId, userId);
       const storedMessages = localStorage.getItem(storageKey);
-      
+
       if (storedMessages) {
         try {
           const parsedMessages = JSON.parse(storedMessages);
@@ -81,9 +81,9 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
 
   const askChatbot = async () => {
     if (!question.trim() || !classroomId) return;
-    
+
     setIsLoading(true);
-    
+
     // Create a new message
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -91,13 +91,13 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
       content: question,
       timestamp: new Date(),
     };
-    
+
     // Add user message to chat
     setMessages(prev => [...prev, userMessage]);
-    
+
     // Show typing indicator
     setIsTyping(true);
-    
+
     try {
       const res = await axios.post("http://127.0.0.1:5000/api/chatbot/respond", {
         classId: classroomId,
@@ -109,15 +109,15 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
       }, {
         headers: { "Content-Type": "application/json" }
       });
-      
+
       const data = res.data;
-      
+
       // Simulate a natural typing delay (remove in production if using streaming)
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Hide typing indicator
       setIsTyping(false);
-      
+
       // Add bot response to chat
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -125,9 +125,9 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
         content: data.response,
         timestamp: new Date(),
       };
-      
+
       setMessages(prev => [...prev, botMessage]);
-      
+
       // Clear the input
       setQuestion("");
     } catch (error) {
@@ -138,7 +138,7 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
       setIsLoading(false);
     }
   };
-  
+
   const clearChat = () => {
     if (classroomId && userId) {
       const storageKey = getChatStorageKey(classroomId, userId);
@@ -182,7 +182,7 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
           <Bot className="h-4 w-4" />
         </AvatarFallback>
       </Avatar>
-      
+
       <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-lg">
         <div className="mb-1 flex justify-between items-center">
           <span className="text-xs font-medium">{ASSISTANT_NAME}</span>
@@ -212,9 +212,9 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
               </span>
             </CardTitle>
             {messages.length > 0 && (
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={clearChat}
                 className="text-xs h-8"
               >
@@ -223,13 +223,13 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
             )}
           </div>
         </CardHeader>
-        
+
         <CardContent className="flex-1 overflow-y-auto p-0">
           {messages.length > 0 || isTyping ? (
             <div className="p-4 space-y-6">
               {messages.map((message) => (
-                <div 
-                  key={message.id} 
+                <div
+                  key={message.id}
                   className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {message.role === "assistant" && (
@@ -239,13 +239,12 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
                       </AvatarFallback>
                     </Avatar>
                   )}
-                  
-                  <div 
-                    className={`max-w-[80%] px-4 py-3 rounded-lg ${
-                      message.role === "user" 
-                        ? "bg-emerald-600 text-white" 
+
+                  <div
+                    className={`max-w-[80%] px-4 py-3 rounded-lg ${message.role === "user"
+                        ? "bg-emerald-600 text-white"
                         : "bg-gray-100 text-gray-800"
-                    }`}
+                      }`}
                   >
                     <div className="mb-1 flex justify-between items-center">
                       <span className="text-xs font-medium">
@@ -257,7 +256,7 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
                     </div>
                     <p className="whitespace-pre-line">{message.content}</p>
                   </div>
-                  
+
                   {message.role === "user" && (
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.email || 'User')}&background=random`} />
@@ -266,7 +265,7 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
                   )}
                 </div>
               ))}
-              
+
               {isTyping && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>
@@ -280,13 +279,13 @@ const AIAssistantTab: React.FC<AIAssistantTabProps> = ({
                 Hello! I'm {ASSISTANT_NAME}
               </h3>
               <p className="text-gray-600 max-w-md">
-                {ASSISTANT_TAGLINE}. Ask me anything about your course materials, 
+                {ASSISTANT_TAGLINE}. Ask me anything about your course materials,
                 and I'll help explain concepts and guide your learning journey.
               </p>
             </div>
           )}
         </CardContent>
-        
+
         <div className="p-4 border-t border-gray-100">
           <div className="flex">
             <textarea

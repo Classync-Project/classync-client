@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar } from "../ui/avatar";
-import ProfileCard from "../ProfileCard";
+import ProfileCard from "./ProfileCard";
 import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
@@ -42,9 +42,9 @@ export default function Logout() {
     }
   };
 
-  const handleProfile = () => {
-    setShowProfileCard(true);
-  };
+  // const handleProfile = () => {
+  //   setShowProfileCard(true);
+  // };
 
   const closeProfileCard = () => {
     setShowProfileCard(false);

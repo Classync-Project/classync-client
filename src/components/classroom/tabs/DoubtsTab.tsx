@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { HelpCircle, MessageSquare, Filter, Clock, ChevronDown, ChevronUp, Trash } from "lucide-react";
+import { HelpCircle, MessageSquare, Clock, ChevronDown, ChevronUp, Trash } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
@@ -29,7 +29,6 @@ interface DoubtsTabProps {
 const DoubtsTab: React.FC<DoubtsTabProps> = ({
   doubts,
   classroomId,
-  role,
   user,
   onDoubtCreated,
 }) => {

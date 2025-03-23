@@ -2,9 +2,9 @@ import { NavLinkType } from "@/types/NavLinkType";
 import NavLink from "./NavLink";
 import Logout from "../auth/Logout";
 import LoginButton from "../auth/LoginButton";
-import CreateClassForm from "../CreateClassForm";
-import JoinClassForm from "../JoinClassForm";
-import Modal from "../Modal";
+import CreateClassForm from "../classroom/CreateClassForm";
+import JoinClassForm from "../classroom/JoinClassForm";
+import Modal from "../common/Modal";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -27,6 +27,7 @@ export default function Nav() {
         ? [
               { href: "/myclasses", text: "Classes" },
               { href: "/calendar", text: "Calendar" },
+              { href: "/user-guide", text: "User-Guide" },
           ]
         : [];
 

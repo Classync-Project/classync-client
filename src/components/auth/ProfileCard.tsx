@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { X, User, Image, Save, Camera } from "lucide-react";
+import { X, Camera } from "lucide-react";
 
 interface ProfileCardProps {
   onClose: () => void;
@@ -15,7 +15,7 @@ interface ProfileCardProps {
 export default function ProfileCard({
   onClose,
   onUpdateSuccess,
-  initialData = {},
+  initialData = { id: null },
 }: ProfileCardProps) {
   const [fullName, setFullName] = useState(initialData.fullName || "");
   const [picture, setPicture] = useState(initialData.picture || "");
@@ -30,7 +30,7 @@ export default function ProfileCard({
   const handleUpdate = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.put(
+      await axios.put(
         "http://localhost:8080/api/user/update",
         {
           id: initialData.id,
@@ -55,17 +55,15 @@ export default function ProfileCard({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/40 transition-all duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/40 transition-all duration-300 ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
       onClick={(e) =>
         e.target === e.currentTarget && handleCloseWithAnimation()
       }
     >
       <div
-        className={`relative w-full max-w-md mx-4 p-8 rounded-2xl shadow-2xl bg-gradient-to-br from-white/90 to-white/80 border border-white/30 transition-all duration-300 transform ${
-          isVisible ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
-        }`}
+        className={`relative w-full max-w-md mx-4 p-8 rounded-2xl shadow-2xl bg-gradient-to-br from-white/90 to-white/80 border border-white/30 transition-all duration-300 transform ${isVisible ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
+          }`}
       >
         <div className="absolute -top-3 -right-3">
           <button

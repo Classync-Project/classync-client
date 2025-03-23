@@ -6,7 +6,7 @@ const StepGuide = ({ steps }: any) => {
           <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-600/20 flex items-center justify-center text-purple-400 font-bold text-xl border border-purple-600/30">
             {index + 1}
           </div>
-          <div className="flex-grow">
+          <div className="flex-grow ">
             <h4 className="text-lg font-medium text-white mb-2">{step.title}</h4>
             <p className="text-gray-300 mb-4 font-light">{step.description}</p>
 
@@ -16,7 +16,7 @@ const StepGuide = ({ steps }: any) => {
                   <img
                     src={step.image}
                     alt={`Step ${index + 1} illustration`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
                   />
                 </div>
                 <div className="ml-4 text-gray-400 text-sm">
