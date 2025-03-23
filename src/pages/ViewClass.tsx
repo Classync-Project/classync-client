@@ -21,10 +21,10 @@ import ClassHeader from "../components/classroom/ClassHeader";
 import ClassroomTabs from "../components/classroom/ClassroomTabs";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ErrorDisplay from "../components/common/ErrorDisplay";
-import ParticipantsTab from "../components/ParticipantsTab";
-import AssignmentsTab from "../components/AssignmentsTab";
+import ParticipantsTab from "../components/classroom/tabs/ParticipantsTab";
+import AssignmentsTab from "../components/classroom/tabs/AssignmentsTab";
 import AnnouncementsTab from "../components/announcements/AnnouncementsTab";
-import DoubtsTab from "../components/DoubtsTab";
+import DoubtsTab from "../components/classroom/tabs/DoubtsTab";
 import AIAssistantTab from "../components/classroom/tabs/ai-assistant-tab";
 
 interface LocationState {
@@ -39,29 +39,26 @@ const ViewClass: React.FC = () => {
 
   // Custom hooks for data fetching
   const { classInfo, loading: classLoading, error: classError } = useClassInfo(classroomId);
-  const { 
-    participants, 
-    loading: participantsLoading, 
+  const {
+    participants,
+    loading: participantsLoading,
     error: participantsError,
-    handleRoleUpdate 
+    handleRoleUpdate
   } = useParticipants(classroomId);
-  const { 
-    assignments, 
-    loading: assignmentsLoading, 
-    error: assignmentsError,
-    refreshAssignments 
+  const {
+    assignments,
+
+    refreshAssignments
   } = useAssignments(classroomId);
-  const { 
-    announcements, 
-    loading: announcementsLoading, 
-    error: announcementsError,
-    refreshAnnouncements 
+  const {
+    announcements,
+
+    refreshAnnouncements
   } = useAnnouncements(classroomId);
-  const { 
-    doubts, 
-    loading: doubtsLoading, 
-    error: doubtsError,
-    refreshDoubts 
+  const {
+    doubts,
+
+    refreshDoubts
   } = useDoubts(classroomId);
 
   // Store role in localStorage
@@ -139,7 +136,7 @@ const ViewClass: React.FC = () => {
           <TabsContent value='ai-assistant' className="focus:outline-none">
             <AIAssistantTab
               classroomId={classroomId || ""}
-              user = {user}
+              user={user}
             />
           </TabsContent>
         </ClassroomTabs>

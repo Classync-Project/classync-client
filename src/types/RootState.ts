@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export interface RootState {
   user: {
     user: User | null;

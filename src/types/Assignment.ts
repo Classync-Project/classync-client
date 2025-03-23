@@ -4,4 +4,6 @@ export interface Assignment {
   content: string;
   questionFilePath: string;
   dueDate: string;
+  classId : string;
+  description: string;
 }

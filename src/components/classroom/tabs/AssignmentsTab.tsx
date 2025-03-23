@@ -7,25 +7,22 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "../components/ui/card";
-import { Button } from "../components/ui/button";
+} from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
 import {
   Plus,
-  ChevronRight,
   Calendar,
   FileText,
   Filter,
   Search,
   SortAsc,
   SortDesc,
-  Bookmark,
-  BookmarkCheck
 } from "lucide-react";
-import CreateAssignment from "../pages/CreateAssignment";
-import { Assignment } from "../types/Assignment";
+import CreateAssignment from "../../../pages/CreateAssignment";
+import { Assignment } from "@/types/Assignment";
 import { motion, AnimatePresence } from "framer-motion";
-import { Badge } from "../components/ui/badge";
-import { Input } from "../components/ui/input";
+import { Badge } from "../../../components/ui/badge";
+import { Input } from "../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,16 +30,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
+} from "../../../components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from "../components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
-import { ScrollArea } from "../components/ui/scroll-area";
+  DialogTitle,
+} from "../../../components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 
 interface AssignmentsTabProps {
   assignments: Assignment[];

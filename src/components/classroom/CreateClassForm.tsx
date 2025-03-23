@@ -18,7 +18,12 @@ const CreateClassForm = ({ onClose, useremail }: { onClose: () => void, useremai
           },
           {
             withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
           }
+          },
+          
         );
   
         if (response.status === 200) {

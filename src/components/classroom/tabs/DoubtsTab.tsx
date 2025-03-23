@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { HelpCircle, MessageSquare, Filter, Clock, ChevronDown, ChevronUp, Trash } from "lucide-react";
+import { Card, CardContent } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { HelpCircle, MessageSquare, Clock, ChevronDown, ChevronUp, Trash } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+import { Badge } from "../../../components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +16,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../components/ui/alert-dialog";
+} from "../../../components/ui/alert-dialog";
 
 interface DoubtsTabProps {
   doubts: any[];
@@ -29,7 +29,6 @@ interface DoubtsTabProps {
 const DoubtsTab: React.FC<DoubtsTabProps> = ({
   doubts,
   classroomId,
-  role,
   user,
   onDoubtCreated,
 }) => {
@@ -291,7 +290,7 @@ const DoubtsTab: React.FC<DoubtsTabProps> = ({
 
       {/* Time filter controls */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-800">Questions</h3>
+        <h3 className="text-lg font-medium text-gray-300">Questions</h3>
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-gray-500" />
           <Select

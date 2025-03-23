@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 import { CheckCircle } from "lucide-react";
 import axios from "axios";
 
-import { Participants } from "../types/Participants";
-import SearchBar from "../components/SearchBar";
-import TabsSection from "../components/TabsSection";
+import { Participants } from "@/types/Participants";
+import SearchBar from "../../../components/SearchBar";
+import TabsSection from "./TabsSection";
 
 const API_BASE_URL = "http://localhost:8080/api";
 

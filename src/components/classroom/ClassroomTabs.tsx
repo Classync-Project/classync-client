@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Calendar, Users, Bell, HelpCircle } from "lucide-react";
 import {
   Tabs,
-  TabsContent,
   TabsList,
   TabsTrigger,
 } from "../ui/tabs";
@@ -13,9 +12,9 @@ interface ClassroomTabsProps {
   defaultTab?: string;
 }
 
-const ClassroomTabs: React.FC<ClassroomTabsProps> = ({ 
-  children, 
-  defaultTab = "assignments" 
+const ClassroomTabs: React.FC<ClassroomTabsProps> = ({
+  children,
+  defaultTab = "assignments"
 }) => {
   return (
     <Tabs defaultValue={defaultTab} className="w-full  max-w-7xl mx-auto mt-20">
@@ -53,7 +52,7 @@ const ClassroomTabs: React.FC<ClassroomTabsProps> = ({
           value="ai-assistant"
           className="flex-1 data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-700 flex items-center justify-center space-x-2 py-3"
         >
-          
+
 
           <span>AI Assistant</span>
         </TabsTrigger>

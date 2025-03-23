@@ -8,7 +8,7 @@ interface FileUploaderProps {
   isLate: boolean;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, selectedFile, isLate }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, selectedFile }) => {
   const [dragging, setDragging] = useState(false);
 
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {

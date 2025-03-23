@@ -1,10 +1,10 @@
 import { NavLinkType } from "@/types/NavLinkType";
-import NavLink from "../NavLink";
+import NavLink from "./NavLink";
 import Logout from "../auth/Logout";
 import LoginButton from "../auth/LoginButton";
-import CreateClassForm from "../CreateClassForm";
-import JoinClassForm from "../JoinClassForm";
-import Modal from "../Modal";
+import CreateClassForm from "../classroom/CreateClassForm";
+import JoinClassForm from "../classroom/JoinClassForm";
+import Modal from "../common/Modal";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -25,8 +25,9 @@ export default function Nav() {
 
     const navLinks: NavLinkType[] = useremail
         ? [
-              { href: "/myclass", text: "My Class" },
+              { href: "/myclasses", text: "Classes" },
               { href: "/calendar", text: "Calendar" },
+              { href: "/user-guide", text: "User-Guide" },
           ]
         : [];
 
@@ -45,7 +46,7 @@ export default function Nav() {
 
     return (
         <div>
-            <nav className="border-b border-gray-800 bg-gradient-to-r from-gray-900 to-gray-800 backdrop-blur-xl">
+            <nav className="border-b border-gray-800 bg-gradient-to-r from-gray-900 to-gray-900 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center">{renderLogo()}</div>
@@ -62,13 +63,13 @@ export default function Nav() {
                             {user && (
                                 <div className="flex space-x-2">
                                     <button
-                                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
+                                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 shadow-lg"
                                         onClick={() => handleTriggerClick("create")}
                                     >
                                         Create Class
                                     </button>
                                     <button
-                                        className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg"
+                                        className="px-4 py-2 bg-gradient-to-r from-fuchsia-500 to-fuchsia-600 text-white rounded-lg hover:from-fuchsia-600 hover:to-fuchsia-700 transition-all duration-300 shadow-lg"
                                         onClick={() => handleTriggerClick("join")}
                                     >
                                         Join Class

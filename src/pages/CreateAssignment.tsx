@@ -9,6 +9,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { classroomId } = useParams<{ classroomId: string }>();
   const { user } = useSelector((state: any) => state.user) || {};
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const createdById = user?.id;
 
@@ -58,6 +59,8 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     submissionData.append("file", file);
     submissionData.append("solutionFile", solutionFile);
 
+    setIsLoading(true);
+    
     try {
       const response = await axios.post(
         "http://localhost:8080/api/classrooms/assignments/add",
@@ -76,6 +79,8 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }
     } catch (err) {
       toast.error("Error creating assignment.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,6 +100,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           className="w-full p-3 border-none rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
           placeholder="Assignment Title"
           required
+          disabled={isLoading}
         />
         <textarea
           value={formData.content}
@@ -102,6 +108,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           className="w-full p-3 border-none rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
           rows={4}
           placeholder="Assignment Details"
+          disabled={isLoading}
         />
 
         <div className="relative">
@@ -116,19 +123,21 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             onChange={(e) => updateForm("dueDate", e.target.value)}
             className="w-full p-3 border-none rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             required
+            disabled={isLoading}
           />
         </div>
 
         {/* Assignment File Upload */}
         <div
-          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-blue-500 bg-blue-900" : "border-gray-700 bg-gray-800"
-            }`}
+          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isLoading ? "opacity-70 cursor-not-allowed" : ""} ${dragging ? "border-blue-500 bg-blue-900" : "border-gray-700 bg-gray-800"}`}
           onDragOver={(e) => {
+            if (isLoading) return;
             e.preventDefault();
             setDragging(true);
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={(e) => {
+            if (isLoading) return;
             e.preventDefault();
             setDragging(false);
             const droppedFile = e.dataTransfer.files?.[0];
@@ -145,16 +154,16 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             className="hidden"
             id="fileUpload"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
+            disabled={isLoading}
           />
-          <label htmlFor="fileUpload" className="cursor-pointer text-gray-300">
+          <label htmlFor="fileUpload" className={`cursor-pointer text-gray-300 ${isLoading ? "cursor-not-allowed" : ""}`}>
             {file ? <span className="text-blue-400 font-medium">{file.name}</span> : "Upload Assignment PDF"}
           </label>
         </div>
 
         {/* Solution File Upload */}
         <div
-          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${dragging ? "border-green-500 bg-green-900" : "border-gray-700 bg-gray-800"
-            }`}
+          className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isLoading ? "opacity-70 cursor-not-allowed" : ""} ${dragging ? "border-green-500 bg-green-900" : "border-gray-700 bg-gray-800"}`}
         >
           <input
             type="file"
@@ -162,17 +171,29 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             className="hidden"
             id="solutionUpload"
             onChange={(e) => setSolutionFile(e.target.files?.[0] || null)}
+            disabled={isLoading}
           />
-          <label htmlFor="solutionUpload" className="cursor-pointer text-gray-300">
+          <label htmlFor="solutionUpload" className={`cursor-pointer text-gray-300 ${isLoading ? "cursor-not-allowed" : ""}`}>
             {solutionFile ? <span className="text-green-400 font-medium">{solutionFile.name}</span> : "Upload Solution PDF"}
           </label>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg hover:scale-105 transition-transform transform origin-center"
+          className={`w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold text-lg transition-all ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:scale-105 transform origin-center"}`}
+          disabled={isLoading}
         >
-          Submit Assignment
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Creating Assignment...
+            </div>
+          ) : (
+            "Create Assignment"
+          )}
         </button>
       </form>
     </motion.div>

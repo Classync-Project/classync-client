@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Calendar, Clock, FileText, X, Loader } from "lucide-react";
+import { Calendar, FileText, X, Loader } from "lucide-react";
 
 interface UpdateAssignmentProps {
   onClose: () => void; // Function to close the modal
@@ -16,7 +16,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
   onAssignmentUpdated,
 }) => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
-  const { user } = useSelector((state: any) => state.user) || {};
+  // const { user } = useSelector((state: any) => state.user) || {};
 
   const [formData, setFormData] = useState({
     title: "",
@@ -191,7 +191,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
         {/* Assignment File Upload */}
         <div
           className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isSubmitting ? "opacity-50 pointer-events-none" :
-              dragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-100"
+            dragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-100"
             }`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -244,7 +244,7 @@ const UpdateAssignment: React.FC<UpdateAssignmentProps> = ({
         {/* Solution File Upload */}
         <div
           className={`w-full p-6 border-2 border-dashed rounded-lg text-center cursor-pointer ${isSubmitting ? "opacity-50 pointer-events-none" :
-              dragging ? "border-green-500 bg-green-50" : "border-gray-300 bg-gray-100"
+            dragging ? "border-green-500 bg-green-50" : "border-gray-300 bg-gray-100"
             }`}
         >
           <input

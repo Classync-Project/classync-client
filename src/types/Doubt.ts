@@ -1,3 +1,5 @@
+import { DoubtResponse } from "./DoubtResponse";
+
 export interface Doubt {
     id: string;
     title: string;
