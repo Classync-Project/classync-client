@@ -1,10 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Courses from "./pages/Courses";
-import Resources from "./pages/Resources";
-import Dashboard from "./pages/Dashboard";
-import Tasks from "./pages/Tasks";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import Nav from "./components/nav/Nav";
@@ -65,10 +61,6 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/user-guide" element={<UserGuide />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/resources" element={<Resources />} />
             <Route path="/myclasses" element={<MyClasses />} />
             <Route path="/classrooms/:classroomId" element={<ViewClass />} />
             <Route

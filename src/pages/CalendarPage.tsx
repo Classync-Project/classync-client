@@ -15,7 +15,7 @@ interface UserClassroom {
 const CalendarPage: React.FC = () => {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [currentDate, setCurrentDate] = useState(new Date());
-    const calendarRef = useRef(null);
+    const calendarRef = useRef<FullCalendar | null>(null);
     const [classFilter, setClassFilter] = useState("All classes");
     const [isLoading, setIsLoading] = useState(true);
     const [classrooms, setClassrooms] = useState<UserClassroom[]>([]);
@@ -113,17 +113,21 @@ const CalendarPage: React.FC = () => {
         const calendarApi = calendarRef.current?.getApi();
         calendarApi?.prev();
         const newDate = calendarApi?.getDate();
-        setCurrentDate(newDate);
+        if (newDate) {
+            setCurrentDate(newDate);
+        }
     };
 
     const handleNextClick = () => {
         const calendarApi = calendarRef.current?.getApi();
         calendarApi?.next();
         const newDate = calendarApi?.getDate();
-        setCurrentDate(newDate);
+        if (newDate) {
+            setCurrentDate(newDate);
+        }
     };
 
-    const formatDateRange = (date) => {
+    const formatDateRange = (date: any) => {
         const startOfWeek = new Date(date);
         startOfWeek.setDate(date.getDate() - date.getDay());
 
@@ -139,16 +143,16 @@ const CalendarPage: React.FC = () => {
         return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${endOfWeek.getFullYear()}`;
     };
 
-    const handleClassFilterChange = (event) => {
+    const handleClassFilterChange = (event: any) => {
         setClassFilter(event.target.value);
     };
 
-    const handleEventClick = (clickInfo) => {
+    const handleEventClick = (clickInfo: any) => {
         const { title, extendedProps } = clickInfo.event;
         alert(`Assignment: ${title}\n${extendedProps.description}`);
     };
 
-    const customDayCell = (arg) => {
+    const customDayCell = (arg: any) => {
         const { date, dayNumberText } = arg;
         const isToday = date.toDateString() === new Date().toDateString();
 
@@ -231,7 +235,7 @@ const CalendarPage: React.FC = () => {
                         <option value="All classes">All classes</option>
                         {classrooms.map((userClassroom) => (
                             <option key={userClassroom.classroom.id} value={userClassroom.classroom.id}>
-                                {userClassroom.classroom.className} 
+                                {userClassroom.classroom.className}
                                 {/* ({userClassroom.role}) */}
                             </option>
                         ))}

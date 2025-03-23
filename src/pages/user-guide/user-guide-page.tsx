@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Bookmark, Layers, BookOpen, HelpCircle, Calendar, Bot } from "lucide-react";
+import { Bookmark, Layers, BookOpen, HelpCircle, Calendar, Bot } from "lucide-react";
 import GuideSection from "../..//components/user-guide/GuideSection";
 import StepGuide from "../..//components/user-guide/StepGuide";
 
@@ -26,7 +26,7 @@ const UserGuide = () => {
     setOpenSection(prevSection => (prevSection === sectionId ? null : sectionId));
   };
 
-  
+
   const classroomManagementSteps = [
     {
       title: "Creating a New Classroom",
@@ -42,12 +42,12 @@ const UserGuide = () => {
       // imageCaption: "Figure 2: Student invitation interface"
     },
   ];
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   // Helper function to render section content
   const renderSectionContent = (title: any) => {
     switch (title) {
@@ -63,7 +63,7 @@ const UserGuide = () => {
             </QuickTip> */}
           </>
         );
-        
+
       case "Assignment Creation & Automatic Evaluation":
         return (
           <>
@@ -79,23 +79,23 @@ const UserGuide = () => {
                   <li>Students can click "Get Your Score" to receive instant feedback</li>
                 </ul>
               </div>
-              
+
               <div className="rounded-lg overflow-hidden border border-gray-700">
-                <img 
-                  src="/user-guide/2/new_assignment.png" 
-                  alt="Teacher uploading solution" 
-                  className="w-full" 
+                <img
+                  src="/user-guide/2/new_assignment.png"
+                  alt="Teacher uploading solution"
+                  className="w-full"
                 />
                 <div className="p-2 bg-gray-800 text-gray-400 text-sm text-center">
                   Figure 1: Creating a new assignment with solution upload
                 </div>
               </div>
-              
+
               <div className="rounded-lg overflow-hidden border border-gray-700">
-                <img 
-                  src="/user-guide/2/evaluation.gif" 
-                  alt="Student receiving grades" 
-                  className="w-3/4 mx-auto" 
+                <img
+                  src="/user-guide/2/evaluation.gif"
+                  alt="Student receiving grades"
+                  className="w-3/4 mx-auto"
                 />
                 <div className="p-2 bg-gray-800 text-gray-400 text-sm text-center">
                   Figure 2: Student receiving automated evaluation results
@@ -104,7 +104,7 @@ const UserGuide = () => {
             </div>
           </>
         );
-        
+
       case "Doubt Management":
         return (
           <>
@@ -120,12 +120,12 @@ const UserGuide = () => {
                   <li>View answer history and related questions</li>
                 </ul>
               </div>
-              
+
               <div className="rounded-lg overflow-hidden border border-gray-700">
-                <img 
-                  src="/user-guide/3/doubts.png" 
-                  alt="Doubt management interface" 
-                  className="w-full" 
+                <img
+                  src="/user-guide/3/doubts.png"
+                  alt="Doubt management interface"
+                  className="w-full"
                 />
                 <div className="p-2 bg-gray-800 text-gray-400 text-sm text-center">
                   Figure 1: The Doubt Management Dashboard
@@ -134,7 +134,7 @@ const UserGuide = () => {
             </div>
           </>
         );
-        
+
       case "Calendar Functionality":
         return (
           <>
@@ -169,7 +169,7 @@ const UserGuide = () => {
             </QuickTip> */}
           </>
         );
-        
+
       case "Saarthi - AI Classroom Assistant":
         return (
           <>
@@ -196,76 +196,76 @@ const UserGuide = () => {
                   </ul>
                 </div>
               </div>
-      
+
               <div className="rounded-lg overflow-hidden border border-gray-700">
-                <img 
-                  src="/user-guide/4/announcement.gif" 
-                  alt="Teacher making an announcement" 
-                  className="w-full" 
+                <img
+                  src="/user-guide/4/announcement.gif"
+                  alt="Teacher making an announcement"
+                  className="w-full"
                 />
                 <div className="p-2 bg-gray-800 text-gray-400 text-sm text-center">
                   Figure 1: Teacher Making an Announcement
                 </div>
               </div>
-      
+
               <div className="rounded-lg overflow-hidden border border-gray-700">
-                <img 
-                  src="/user-guide/4/saarthi.gif" 
-                  alt="Saarthi responding to announcements" 
-                  className="w-full" 
+                <img
+                  src="/user-guide/4/saarthi.gif"
+                  alt="Saarthi responding to announcements"
+                  className="w-full"
                 />
                 <div className="p-2 bg-gray-800 text-gray-400 text-sm text-center">
                   Figure 2: Saarthi Fetching Latest Announcements
                 </div>
               </div>
             </div>
-      
+
             <QuickTip title="Enhancing Saarthi's Responses">
               Upload lecture notes and announcements regularly so Saarthi can provide relevant updates and support to students.
             </QuickTip>
           </>
         );
-      
+
       default:
         return null;
     }
   };
-  
+
   // Features for the guide with IDs for accessibility
   const guideFeatures = [
-    { 
+    {
       id: "classroom-management",
-      title: "Classroom Management", 
+      title: "Classroom Management",
       icon: <Layers className="w-6 h-6 text-purple-500" />
     },
-    { 
+    {
       id: "saarthi-assistant",
-      title: "Saarthi - AI Classroom Assistant", 
-      icon: <Bot className="w-6 h-6 text-indigo-500" /> 
+      title: "Saarthi - AI Classroom Assistant",
+      icon: <Bot className="w-6 h-6 text-indigo-500" />
     },
-    { 
+    {
       id: "assignment-creation",
-      title: "Assignment Creation & Automatic Evaluation", 
-      icon: <BookOpen className="w-6 h-6 text-blue-500" /> 
+      title: "Assignment Creation & Automatic Evaluation",
+      icon: <BookOpen className="w-6 h-6 text-blue-500" />
     },
-    { 
+    {
       id: "doubt-management",
-      title: "Doubt Management", 
-      icon: <HelpCircle className="w-6 h-6 text-orange-500" /> 
+      title: "Doubt Management",
+      icon: <HelpCircle className="w-6 h-6 text-orange-500" />
     },
-    { 
+    {
       id: "calendar-functionality",
-      title: "Calendar Functionality", 
-      icon: <Calendar className="w-6 h-6 text-pink-500" /> 
+      title: "Calendar Functionality",
+      icon: <Calendar className="w-6 h-6 text-pink-500" />
     },
-    
+
   ];
-  
+
   // Filter features based on search query
-  const filteredFeatures = searchQuery 
-    ? guideFeatures.filter(feature => 
-        feature.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+  const filteredFeatures = searchQuery
+    ? guideFeatures.filter(feature =>
+      feature.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : guideFeatures;
 
   return (
@@ -280,7 +280,7 @@ const UserGuide = () => {
             <p className="text-gray-300 text-xl max-w-3xl mx-auto mb-6 font-light">
               Learn how to use all the powerful features Classync has to offer
             </p>
-            
+
             {/* Search Bar */}
             {/* <div className="max-w-2xl mx-auto mb-8">
               <div className="relative">
@@ -310,7 +310,7 @@ const UserGuide = () => {
               <ul className="space-y-2">
                 {guideFeatures.map((feature) => (
                   <li key={feature.id}>
-                    <a 
+                    <a
                       href={`#${feature.id}`}
                       onClick={(e) => {
                         e.preventDefault();
@@ -320,11 +320,10 @@ const UserGuide = () => {
                           handleSectionToggle(feature.id);
                         }
                       }}
-                      className={`flex items-center gap-2 py-2 px-3 rounded transition-colors ${
-                        openSection === feature.id 
-                          ? "bg-gray-700/70 text-white" 
-                          : "text-gray-300 hover:text-purple-400 hover:bg-gray-700/50"
-                      }`}
+                      className={`flex items-center gap-2 py-2 px-3 rounded transition-colors ${openSection === feature.id
+                        ? "bg-gray-700/70 text-white"
+                        : "text-gray-300 hover:text-purple-400 hover:bg-gray-700/50"
+                        }`}
                     >
                       {feature.icon}
                       <span>{feature.title}</span>
@@ -334,14 +333,14 @@ const UserGuide = () => {
               </ul>
             </div>
           </div>
-          
+
           {/* Main Content */}
           <div className="col-span-1 lg:col-span-3">
             {filteredFeatures.length > 0 ? (
               filteredFeatures.map((feature) => (
                 <div key={feature.id} id={feature.id} className="scroll-mt-8">
-                  <GuideSection 
-                    title={feature.title} 
+                  <GuideSection
+                    title={feature.title}
                     icon={feature.icon}
                     isOpen={openSection === feature.id}
                     onToggle={() => handleSectionToggle(feature.id)}
@@ -353,7 +352,7 @@ const UserGuide = () => {
             ) : (
               <div className="text-center py-12 bg-gray-800/30 rounded-xl border border-gray-700">
                 <div className="text-gray-400 mb-4 text-lg">No results found for "{searchQuery}"</div>
-                <button 
+                <button
                   className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md text-white transition-colors"
                   onClick={() => setSearchQuery("")}
                 >

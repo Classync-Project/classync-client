@@ -39,26 +39,26 @@ const ViewClass: React.FC = () => {
 
   // Custom hooks for data fetching
   const { classInfo, loading: classLoading, error: classError } = useClassInfo(classroomId);
-  const { 
-    participants, 
-    loading: participantsLoading, 
+  const {
+    participants,
+    loading: participantsLoading,
     error: participantsError,
-    handleRoleUpdate 
+    handleRoleUpdate
   } = useParticipants(classroomId);
-  const { 
-    assignments, 
-   
-    refreshAssignments 
+  const {
+    assignments,
+
+    refreshAssignments
   } = useAssignments(classroomId);
-  const { 
-    announcements, 
-   
-    refreshAnnouncements 
+  const {
+    announcements,
+
+    refreshAnnouncements
   } = useAnnouncements(classroomId);
-  const { 
-    doubts, 
-   
-    refreshDoubts 
+  const {
+    doubts,
+
+    refreshDoubts
   } = useDoubts(classroomId);
 
   // Store role in localStorage
@@ -136,7 +136,7 @@ const ViewClass: React.FC = () => {
           <TabsContent value='ai-assistant' className="focus:outline-none">
             <AIAssistantTab
               classroomId={classroomId || ""}
-              user = {user}
+              user={user}
             />
           </TabsContent>
         </ClassroomTabs>
