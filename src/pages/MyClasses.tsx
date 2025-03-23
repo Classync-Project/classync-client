@@ -38,7 +38,7 @@ const MyClasses: React.FC = () => {
             withCredentials: true,
           }
         );
-        // console.log(data);
+        console.log(data);
         setUserClassrooms(data);
       } catch (err) {
         console.error(err);
