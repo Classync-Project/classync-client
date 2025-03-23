@@ -15,6 +15,7 @@ import { useParticipants } from "../hooks/useParticipants";
 import { useAssignments } from "../hooks/useAssignments";
 import { useAnnouncements } from "../hooks/useAnnouncements";
 import { useDoubts } from "../hooks/useDoubts";
+import useCheckClassroomAccess from "../hooks/useCheckClassroomAccess"; // Import the new hook
 
 // Components
 import ClassHeader from "../components/classroom/ClassHeader";
@@ -37,6 +38,9 @@ const ViewClass: React.FC = () => {
   const { role } = (location.state as LocationState) || {};
   const { user } = useSelector((state: RootState) => state.user);
 
+  // Check if the user has access to the classroom
+  const hasAccess = useCheckClassroomAccess();
+
   // Custom hooks for data fetching
   const { classInfo, loading: classLoading, error: classError } = useClassInfo(classroomId);
   const {
@@ -47,17 +51,14 @@ const ViewClass: React.FC = () => {
   } = useParticipants(classroomId);
   const {
     assignments,
-
     refreshAssignments
   } = useAssignments(classroomId);
   const {
     announcements,
-
     refreshAnnouncements
   } = useAnnouncements(classroomId);
   const {
     doubts,
-
     refreshDoubts
   } = useDoubts(classroomId);
 
@@ -73,6 +74,12 @@ const ViewClass: React.FC = () => {
 
   // Determine if we have any errors
   const error = classError || participantsError;
+
+  // If the user doesn't have access, don't render the page
+  if (!hasAccess) {
+    
+    return null;
+  }
 
   if (isLoading) {
     return <LoadingSpinner message="Loading classroom..." />;
@@ -132,8 +139,7 @@ const ViewClass: React.FC = () => {
             />
           </TabsContent>
 
-
-          <TabsContent value='ai-assistant' className="focus:outline-none">
+          <TabsContent value="ai-assistant" className="focus:outline-none">
             <AIAssistantTab
               classroomId={classroomId || ""}
               user={user}
