@@ -5,4 +5,5 @@ export interface ClassInfo {
     subject?: string;
     createdBy: string;
     createdAt: string;
+    classroomCode:string;
   }
