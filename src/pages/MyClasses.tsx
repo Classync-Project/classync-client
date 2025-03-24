@@ -9,6 +9,7 @@ import { Classroom } from "../types/Classroom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import DeleteConfirmationDialog from "../components/common/DeleteConfirmationDialog";
 
 interface UserClassroom {
   classroom: Classroom;
@@ -19,6 +20,8 @@ const MyClasses: React.FC = () => {
   const [userClassrooms, setUserClassrooms] = useState<UserClassroom[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [classroomToUnenroll, setClassroomToUnenroll] = useState<string | null>(null);
   const useremail = localStorage.getItem("useremail");
   const navigate = useNavigate();
 
@@ -66,6 +69,39 @@ const MyClasses: React.FC = () => {
         console.error("Failed to copy: ", err);
         toast.error("Failed to copy code");
       });
+  };
+
+  // Open delete confirmation dialog
+  const openDeleteDialog = (e: React.MouseEvent, classroomId: string) => {
+    e.stopPropagation(); // Prevent card click event from triggering
+    setClassroomToUnenroll(classroomId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Handle actual unenroll from classroom
+  const confirmUnenroll = async () => {
+    if (!classroomToUnenroll || !useremail) return;
+
+    try {
+      console.log(useremail, classroomToUnenroll);
+      await axios.delete("http://localhost:8080/api/userclassroom/unenroll", {
+        data: {
+          useremail,
+          classroomId: classroomToUnenroll
+        },
+        withCredentials: true,
+      });
+
+      // Remove the classroom from the state
+      setUserClassrooms(prevClassrooms =>
+        prevClassrooms.filter(uc => uc.classroom.id !== classroomToUnenroll)
+      );
+
+      toast.success("Successfully unenrolled from classroom");
+    } catch (err) {
+      console.error("Failed to unenroll:", err);
+      toast.error("Failed to unenroll from classroom");
+    }
   };
 
   // Handle card click to navigate to classroom
@@ -182,13 +218,6 @@ const MyClasses: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 py-10 px-4 sm:px-6 text-white">
       <div className="container mx-auto max-w-7xl">
-        {/* <div className="relative mb-16 text-center">
-          <h1 className="text-6xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text pb-2">
-            ✨ My Learning Journey ✨
-          </h1>
-          <div className="h-1 w-40 bg-gradient-to-r from-pink-500 to-purple-500 mx-auto mt-4 rounded-full"></div>
-        </div> */}
-
         {userClassrooms.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-4 max-w-2xl mx-auto">
             <div className="text-6xl mb-6 animate-bounce">📭</div>
@@ -208,16 +237,17 @@ const MyClasses: React.FC = () => {
               const emoji = getClassEmoji(classroom.className, role);
               const gradient = getCardGradient(classroom.className, emoji);
               const isCopied = copiedCode === classroom.classroomCode;
+              const isStudent = role.toLowerCase().includes("student");
 
               return (
                 <Card
                   id={classroom.id}
                   key={classroom.classroomCode}
-                  className={`bg-gradient-to-br ${gradient} shadow-xl border-none rounded-3xl overflow-hidden  transition-all duration-300 group relative cursor-pointer`}
+                  className={`bg-gradient-to-br ${gradient} shadow-xl border-none rounded-3xl overflow-hidden transition-all duration-300 group relative cursor-pointer`}
                   onClick={() => handleCardClick(classroom.id, role)}
                 >
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 z-0"></div>
-                  <div className="absolute top-0 right-0 p-4 z-20">
+                  <div className="absolute top-0 right-0 p-4 z-20 flex gap-2">
                     <button
                       onClick={(e) =>
                         copyToClipboard(e, classroom.classroomCode)
@@ -231,6 +261,19 @@ const MyClasses: React.FC = () => {
                       </span>
                     </button>
                   </div>
+
+                  {isStudent && (
+                    <div className="absolute top-0 left-0 p-4 z-20">
+                      <button
+                        onClick={(e) => openDeleteDialog(e, classroom.id)}
+                        className="bg-red-500/70 hover:bg-red-600/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 transition-all duration-300"
+                        title="Unenroll from classroom"
+                      >
+                        <span>Unenroll</span>
+                        <span className="text-xs">🚪</span>
+                      </button>
+                    </div>
+                  )}
 
                   <div className="absolute -bottom-10 -right-10 text-8xl opacity-20 transition-transform duration-500 z-0">
                     {emoji}
@@ -274,6 +317,15 @@ const MyClasses: React.FC = () => {
             })}
           </div>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => setIsDeleteDialogOpen(false)}
+          onConfirm={confirmUnenroll}
+          title="Confirm Unenrollment"
+          description="Are you sure you want to unenroll from this classroom? This action cannot be undone."
+        />
       </div>
     </div>
   );
