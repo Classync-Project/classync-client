@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import { useClassInfo } from "../hooks/useClassInfo";
+import { useParticipants } from "../hooks/useParticipants";
 
 const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { classroomId } = useParams<{ classroomId: string }>();
@@ -31,6 +33,18 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [dragging, setDragging] = useState(false);
   const [minDate, setMinDate] = useState(getCurrentDateTime());
 
+  const {
+    classInfo,
+    loading: classLoading,
+    error: classError,
+  } = useClassInfo(classroomId);
+  const {
+    participants,
+    loading: participantsLoading,
+    error: participantsError,
+    handleRoleUpdate,
+  } = useParticipants(classroomId);
+
   useEffect(() => {
     setMinDate(getCurrentDateTime());
   }, []);
@@ -38,6 +52,76 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const updateForm = (field: string, value: string) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
+
+
+  
+  const handleSendEmail = async (title: string) => {
+    // setIsSendingEmail(true);
+    const className = classInfo?.className;
+    const classId = classInfo?.id;
+    console.log(classInfo?.classroomCode);
+    // console.log("class info is " +);
+    try {
+      // Ensure className is defined
+      if (!className) {
+        throw new Error("Class name is undefined.");
+      }
+
+      const subject = `New Assignment: "${title}" Uploaded in ${className}!`;
+
+      const message = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+    <h2 style="color: #4a64e1;">New Assignment Alert! 📚</h2>
+    <p>Hello,</p>
+    <p>A new assignment titled <strong>${title}</strong> has been uploaded in your class <strong>${className}</strong>.</p>
+
+    <h3 style="color: #4a64e1; margin-top: 20px;">Assignment Details:</h3>
+    <ul>
+      <li><strong>Title:</strong> ${title}</li>
+      <li><strong>Class:</strong> ${className}</li>
+      <li>Check the Assignments tab for submission details and deadlines</li>
+      <li>Ensure timely submission to avoid penalties</li>
+      <li>Reach out to your instructor for any queries</li>
+    </ul>
+
+    <p>Click the button below to view the assignment:</p>
+    <a href="http://localhost:5173/classrooms/${classId}" 
+       style="display: inline-block; padding: 12px 20px; font-size: 16px; color: #ffffff; background-color: #4a64e1; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center;">
+      View Assignment
+    </a>
+
+    <p style="margin-top: 30px;">Best regards,<br>The ${className} Team</p>
+  </div>
+`;
+
+    
+
+
+      // Send the email request
+
+      for (const participant of participants) {
+        await axios.post(
+          "http://localhost:8080/api/mail/send",
+          {
+            to: participant.email, // Accessing each participant's email
+            subject: subject,
+            message: message,
+          },
+          { withCredentials: true }
+        );
+      }
+      
+        
+      toast.success(`Assignment notification has been shared!`);
+      // setShowEmailForm(false);
+    } catch (error) {
+      toast.error("Failed to send invitation email");
+      console.error("Error sending invitation:", error);
+    } finally {
+      // setIsSendingEmail(false);
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +156,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       );
       if (response.status === 200) {
         toast.success("Assignment created successfully!");
+        handleSendEmail(formData.title,);
         navigate(`/classrooms/${classroomId}`);
         onClose();
       } else {
@@ -83,6 +168,7 @@ const CreateAssignment: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <motion.div

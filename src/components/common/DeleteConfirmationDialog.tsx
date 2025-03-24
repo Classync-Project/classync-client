@@ -41,7 +41,7 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
             }}
             className="bg-red-500 hover:bg-red-600"
           >
-            Delete
+            Confirm
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
