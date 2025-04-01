@@ -13,6 +13,10 @@ import CalendarPage from "./pages/CalendarPage";
 import UpdateAssignment from "./pages/UpdateAssignment";
 import UserGuide from "./pages/user-guide/user-guide-page";
 import Footer from "./components/Footer";
+import AdminRoute from "./utils/AdminRoute";
+import AdminClassesPage from "./pages/AdminClassesPage";
+import ClassroomDetails from "./pages/ClassroomDetail";
+import AllUsersPage from "./pages/AllUserPage";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -59,6 +63,14 @@ const App: React.FC = () => {
         {/* Content Section - Uses flex-grow to push the footer down */}
         <div className="flex-grow">
           <Routes>
+            <Route element={<AdminRoute />}>
+              <Route path="/admin/all-classes" element={<AdminClassesPage />} />
+              <Route path="/admin/all-users" element={<AllUsersPage />} />
+              <Route
+                path="/classroom/:classroomId"
+                element={<ClassroomDetails />}
+              />
+            </Route>
             <Route path="/" element={<Home />} />
             <Route path="/user-guide" element={<UserGuide />} />
             <Route path="/myclasses" element={<MyClasses />} />
@@ -70,7 +82,10 @@ const App: React.FC = () => {
             <Route
               path="/classrooms/:classroomId/assignments/:assignmentId/edit"
               element={
-                <UpdateAssignment onClose={() => { }} onAssignmentUpdated={() => { }} />
+                <UpdateAssignment
+                  onClose={() => {}}
+                  onAssignmentUpdated={() => {}}
+                />
               }
             />
             <Route path="/calendar" element={<CalendarPage />} />
