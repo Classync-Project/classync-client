@@ -17,6 +17,7 @@ import AdminRoute from "./utils/AdminRoute";
 import AdminClassesPage from "./pages/AdminClassesPage";
 import ClassroomDetails from "./pages/ClassroomDetail";
 import AllUsersPage from "./pages/AllUserPage";
+import ClassroomParticipants from "./pages/ClassroomParticipant";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -68,8 +69,12 @@ const App: React.FC = () => {
               <Route path="/admin/all-users" element={<AllUsersPage />} />
               <Route
                 path="/classroom/:classroomId"
-                element={<ClassroomDetails />}
+                element={<ClassroomParticipants />}
               />
+              {/* <Route
+                path="/classroom/:classroomId"
+                element={<ClassroomDetails />}
+              /> */}
             </Route>
             <Route path="/" element={<Home />} />
             <Route path="/user-guide" element={<UserGuide />} />
